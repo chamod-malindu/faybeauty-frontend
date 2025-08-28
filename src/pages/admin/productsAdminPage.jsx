@@ -8,22 +8,27 @@ import { FaRegEdit } from "react-icons/fa";
 
 export default function ProductsAdminPage() {
   const[products, setProducts] = useState([]);
-  const[a, setA] = useState(0);
+  const[isLoading, setIsLoading] = useState(true);
+
   useEffect(
     () => {
-      axios.get(import.meta.env.VITE_BACKEND_URL+"/api/products").then(
-        (res) => {
-          setProducts(res.data);
-        }
-        )
+      if(isLoading){
+        axios.get(import.meta.env.VITE_BACKEND_URL+"/api/products").then(
+          (res) => {
+            setProducts(res.data);
+            setIsLoading(false);
+          }
+          )
+      }
     },
-    [a]
+    [isLoading]
   )
   const navigate = useNavigate();
   
   return (
     <div className="w-full h-full border-[3px] p-4">
-      <table className="w-full border-collapse border border-gray-300 text-left">
+      {isLoading?<h1>Loading......</h1> 
+      : (<table className="w-full border-collapse border border-gray-300 text-left">
         <thead className="bg-gray-200">
           <tr>
             <th className="p-2 border border-gray-300">Image</th>
@@ -76,7 +81,7 @@ export default function ProductsAdminPage() {
                         console.log("Product Deleted Successfully");
                         console.log(res.data);
                         toast.success("Product Deleted Successfully");
-                        setA(a+1);
+                        setIsLoading(!isLoading);
 
                       }
                     ).catch(
@@ -104,8 +109,8 @@ export default function ProductsAdminPage() {
             </tr>
           ))}
         </tbody>
-      </table>
-
+      </table>)
+      }
       <Link
         to={"/admin/newProduct"}
         className="fixed right-[60px] bottom-[60px] p-[20px] rounded-full text-white bg-black shadow-2xl cursor-pointer"
