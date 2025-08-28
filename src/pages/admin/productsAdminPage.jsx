@@ -4,7 +4,7 @@ import { FaTrashCan } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { set } from "mongoose";
+import { FaRegEdit } from "react-icons/fa";
 
 export default function ProductsAdminPage() {
   const[products, setProducts] = useState([]);
@@ -56,7 +56,7 @@ export default function ProductsAdminPage() {
               <td className="p-2 border border-gray-300">{product.labelledPrice}</td>
               <td className="p-2 border border-gray-300">{product.stock}</td>
               <td className="p-2 border border-gray-300">{product.category}</td>
-              <td className="p-2 border border-gray-300 text-center">
+              <td className="p-4 border border-gray-300 flex justify-center items-center gap-2">
                 <button className="text-white bg-red-600 p-[10px] rounded-full hover:text-red-800"
                 onClick={
                   ()=> {
@@ -88,6 +88,17 @@ export default function ProductsAdminPage() {
                   }
                 }>
                   <FaTrashCan />
+                </button>
+                <button className="text-white bg-blue-500 p-[10px] rounded-full hover:text-blue-800"
+                  onClick={
+                    () => {
+                      navigate("/admin/updateProduct", {
+                        state: product
+                      });
+                    }
+                  }
+                >
+                  <FaRegEdit />
                 </button>
               </td>
             </tr>
