@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { FaRegEdit } from "react-icons/fa";
+import Loader from "../../components/loader";
 
 export default function ProductsAdminPage() {
   const[products, setProducts] = useState([]);
@@ -27,7 +28,7 @@ export default function ProductsAdminPage() {
   
   return (
     <div className="w-full h-full border-[3px] p-4">
-      {isLoading?<h1>Loading......</h1> 
+      {isLoading?<Loader /> 
       : (<table className="w-full border-collapse border border-gray-300 text-left">
         <thead className="bg-gray-200">
           <tr>
