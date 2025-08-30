@@ -27,7 +27,7 @@ export default function ProductsAdminPage() {
   const navigate = useNavigate();
   
   return (
-    <div className="w-full h-full border-[3px] p-4">
+    <div className="w-full h-full p-4">
       {isLoading?<Loader /> 
       : (<table className="w-full border-collapse border border-gray-300 text-left">
         <thead className="bg-gray-200">
