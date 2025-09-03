@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
+
 export default function ProductCard(props) {
   const product = props.product; 
   return (
-    <dev
+    <Link to={"/overview/"+product.productId}
       className="w-[300px] h-[400px] flex flex-col shrink-0 shadow-xl rounded-2xl overflow-hidden bg-white transition-transform hover:scale-105 hover:shadow-2xl"
     >
       {/* Product Image */}
@@ -57,6 +59,6 @@ export default function ProductCard(props) {
           )}
         </div>
       </div>
-    </dev>
+    </Link>
   );
 }
