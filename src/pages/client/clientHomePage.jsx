@@ -13,7 +13,7 @@ export default function ClientHomePage() {
         <Route path="/reviews" element={<h1 className="text-center mt-10 text-3xl font-bold">Reviews Page</h1>} />
         <Route path="/aboutUS" element={<h1 className="text-center mt-10 text-3xl font-bold">About Us Page</h1>} />
         <Route path="/contactUS" element={<h1 className="text-center mt-10 text-3xl font-bold">Contact Us Page</h1>} />
-        <Route path="/overview" element={<ProductOverviewPage />} />
+        <Route path="/overview/:productId" element={<ProductOverviewPage />} />
         <Route path="/*" element={<h1 className="text-center mt-10 text-3xl font-bold">404 - Page Not Found</h1>} />
       </Routes>
     </div>
