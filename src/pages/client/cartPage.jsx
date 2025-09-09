@@ -3,10 +3,12 @@ import { addToCart, getCart, getTotal } from "../../utils/cart"
 import { FaPlus } from "react-icons/fa6";
 import { HiMiniMinus } from "react-icons/hi2";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 export default function CartPage(){
-
   const[cart, setCart] = useState(getCart());
+  const navigate= useNavigate();
+
   console.log(cart);
   return(
     <div className="w-full h-full flex flex-col items-center gap-[30px] my-[20px]">
@@ -86,8 +88,14 @@ export default function CartPage(){
                       maximumFractionDigits: 2,
                     })}
         </span>
-        <button className="bg-blue-400 w-[150px] h-[50px] rounded-2xl font-semibold text-white  border-blue-400 border-[2px] left-[20px] hover:bg-white hover:text-blue-400 absolute">
-          Check Out
+        <button className="bg-blue-400 w-[150px] h-[50px] rounded-2xl font-semibold text-white  border-blue-400 border-[2px] left-[20px] hover:bg-white hover:text-blue-400 absolute" onClick={
+          ()=> {
+            navigate("/checkout", {
+              state: {items: cart}
+            });
+          }
+        }>
+          Checkout
         </button>
 
       </div>
