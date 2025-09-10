@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { addToCart, getCart, getTotal } from "../../utils/cart"
 import { FaPlus } from "react-icons/fa6";
 import { HiMiniMinus } from "react-icons/hi2";
@@ -7,10 +7,45 @@ import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 
+
 export default function CheckoutPage(){
   const location = useLocation();
   const navigate = useNavigate();
   const [cart, setCart] = useState(location.state?.items || []);
+  const [user, setUser] = useState(null);
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+
+  useEffect(
+    () => {
+      const token = localStorage.getItem("token");
+      if(!token){
+        toast.error("Pleace login befor to checkout");
+        navigate("/login");
+
+      }else{
+        axios.get(import.meta.env.VITE_BACKEND_URL+"/api/users",
+        {
+          headers: {
+              Authorization: `Bearer ${token}`,
+          }
+
+        }).then(
+          (res) => {
+            setUser(res.data);
+            setName(res.data.firstName + " " + res.data.lastName);
+            console.log(res.data);
+          }
+        ).catch(
+          (err) => {
+            console.error(err);
+            toast.error("Failed to fetch user details");
+            navigate("/login");
+          }
+        )
+      }
+    }, []);
 
   if (!location.state?.items) {
     toast.error("Please select items to checkout");
@@ -37,8 +72,8 @@ export default function CheckoutPage(){
 		}
 
     const order = {
-      address: "sdsd",
-      phone: "071-1111",
+      address: address,
+      phone: phone,
       items: cart.map((item) => ({
         productId: item.productId,
         quantity: item.quantity
@@ -57,7 +92,7 @@ export default function CheckoutPage(){
         await axios.post(import.meta.env.VITE_BACKEND_URL + "/api/orders", order, {
             headers: {
                 Authorization: `Bearer ${token}`,
-            },
+            }
         });
         toast.success("Order placed successfully");
         
@@ -156,7 +191,7 @@ export default function CheckoutPage(){
                       maximumFractionDigits: 2,
                     })}
         </span>
-        <button className="bg-blue-400 w-[150px] h-[50px] rounded-2xl font-semibold text-white  border-blue-400 border-[2px] left-[20px] hover:bg-white hover:text-blue-400 absolute" onClick={
+        <button className="bg-blue-400 w-[150px] h-[50px] rounded-2xl font-semibold text-white  border-blue-400 border-[2px] left-[20px] hover:bg-white hover:text-blue-400 absolute cursor-pointer" onClick={
           ()=> {
             placeOrder();
           }
@@ -164,6 +199,23 @@ export default function CheckoutPage(){
           Place Order
         </button>
 
+      </div>
+      <div className="w-[800px] h-[100px] flex flex-row justify-center items-center gap-[10px] shadow-2xl rounded-2xl">
+        <input className="w-[200px] h-[40px] border border-gray-300 rounded-lg p-[10px] mr-[10px]" 
+          type="text"
+          placeholder="Endter Your Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)} />
+        <input className="w-[200px] h-[40px] border border-gray-300 rounded-lg p-[10px] mr-[10px]"
+          type="text"
+          placeholder="Enter Youre Address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)} />
+        <input className="w-[200px] h-[40px] border border-gray-300 rounded-lg p-[10px] mr-[10px]"
+          type="text"
+          placeholder="Enter Your Phone Number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)} />
       </div>
     </div>
   )
