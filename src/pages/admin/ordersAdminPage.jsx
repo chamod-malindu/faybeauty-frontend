@@ -14,6 +14,8 @@ export default function OrdersAdminPage(){
   const [limit, setLimit] = useState(10);
   const [popupVisible, setPopupVisible] = useState(false);
   const [clickedOrder, setClickedOrder] = useState(null);
+  const [orderStatus, setOrderStatus] = useState("pending"); // pending, completed, cancelled
+  const [orderNotes, setOrderNotes] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -66,6 +68,8 @@ export default function OrdersAdminPage(){
                   <tr key={index} className="border-b-[1px] hover:bg-blue-400 cursor-pointer" onClick={
                     () => {
                       setClickedOrder(order);
+                      setOrderStatus(order.status);
+                      setOrderNotes(order.note);
                       setPopupVisible(true);
                       
                     }
@@ -95,7 +99,7 @@ export default function OrdersAdminPage(){
       {
         popupVisible && (
           <div className="fixed top-0 left-0 w-full h-full bg-[#00000050] flex justify-center items-center">
-            <div className="w-[700px] h-[700px] bg-white rounded-2xl relative p-6 flex flex-col">
+            <div className="w-[700px] h-[650px] bg-white rounded-2xl relative p-6 flex flex-col">
 
               {/* Order Header */}
               <h2 className="text-xl font-bold mb-2">Order ID: {clickedOrder.orderId}</h2>
@@ -116,16 +120,28 @@ export default function OrdersAdminPage(){
                 >
                   {clickedOrder.status}
                 </span>
+                <select className="ml-[5px] border-[2px] rounded-[5px]" value={orderStatus} onChange={
+                  (e) => setOrderStatus(e.target.value)
+                }>
+                  <option value="Pending">Pending</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
               </p>
               <p><b>Date:</b> {new Date(clickedOrder.date).toLocaleString()}</p>
-              <p><b>Note:</b> {clickedOrder.note}</p>
+              <p>
+                <b>Note:</b> {clickedOrder.note}
+                <textarea className="w-full border-[2px] rounded-[5px] mt-[5px]" value={orderNotes} onChange={
+                  (e) => setOrderNotes(e.target.value)
+                }></textarea>
+              </p>
 
               {/* Items Section */}
               <div className="mt-4 flex-1">
                 <h3 className="text-lg font-semibold mb-2">Items</h3>
 
                 {/* Scrollable items box */}
-                <div className="max-h-[180px] overflow-y-auto space-y-3 pr-2">
+                <div className="max-h-[200px] overflow-y-auto space-y-3 pr-2">
                   {clickedOrder.items.map((item, idx) => (
                     <div
                       key={idx}
@@ -155,6 +171,34 @@ export default function OrdersAdminPage(){
                 Total: {clickedOrder.total.toLocaleString()} LKR
               </div>
 
+              {/* Save Button */}
+              {
+                (orderStatus != clickedOrder.status || orderNotes != clickedOrder.note) && <button className="absolute top-[8px] right-[8px] w-[115px] h-[40px] rounded-[10px] flex justify-center items-center text-white  border-[2px] border-blue-400 cursor-pointer hover:bg-white hover:text-blue-400 bg-blue-400" onClick={
+                  async () => {
+                    setPopupVisible(false);
+                    try {
+                      await axios.put(import.meta.env.VITE_BACKEND_URL+"/api/orders/"+clickedOrder.orderId,
+                      {
+                        status: orderStatus,
+                        note: orderNotes
+                      },
+                      {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        }
+                      });
+                      toast.success("Order updated successfully");
+                      setIsLoading(true);
+                    }catch(err){
+                      console.error(err);
+                      toast.error("Failed to update order");
+                    }
+                  }   
+                }>
+                  Save Changes
+                </button>
+                } 
+
               {/* Close Button */}
               <button
                 className="absolute w-[30px] h-[30px] top-[-25px] right-[-25px] bg-red-500 border-[2px] border-red-500 
@@ -168,9 +212,6 @@ export default function OrdersAdminPage(){
           </div>
         )
       }
-
-
-
 
       <Paginator currentPage={page} totalPages={totalPages} setCurrentPage={setPage} limit={limit} setLimit={setLimit} setLoading={setIsLoading}/>
     </div>
