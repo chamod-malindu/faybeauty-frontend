@@ -19,6 +19,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <div className="w-full min-h-screen bg-primary text-secondary">
           <Toaster position='top-right' reverseOrder={true} />
           <Routes path="/">
             <Route path="/login" element={<LoginPage />}/>
@@ -27,7 +28,7 @@ function App() {
             <Route path="/admin/*" element={<AdminPage />}/>
             <Route path="/*" element={<ClientHomePage />}/>
           </Routes>  
-         
+        </div>  
     </BrowserRouter>
   )
 }
