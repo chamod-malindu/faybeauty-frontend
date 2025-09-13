@@ -11,7 +11,7 @@ export default function CartPage(){
 
   console.log(cart);
   return(
-    <div className="w-full h-full flex flex-col items-center gap-[30px] my-[20px]">
+    <div className="w-full h-full flex flex-col bg-primary items-center gap-[30px] my-[20px] text-secondary">
       {
         cart.map(
           (item) => {
@@ -33,7 +33,7 @@ export default function CartPage(){
 
                 {/* Quantity */}
                 <div className="w-[200px] flex flex-row items-center justify-center gap-[15px]">
-                  <button className="bg-blue-500 w-[30px] h-[30px] flex items-center justify-center rounded-full cursor-pointer hover:bg-blue-300" onClick={
+                  <button className="bg-accent w-[30px] h-[30px] flex items-center justify-center rounded-full cursor-pointer hover:bg-accent-hover" onClick={
                     () => {
                       addToCart(item, 1);
                       setCart(getCart());
@@ -44,7 +44,7 @@ export default function CartPage(){
                   <span className="font-semibold flex justify-center items-center ">
                     {item.quantity}
                   </span>
-                  <button className="bg-blue-500 w-[30px] h-[30px] flex items-center justify-center rounded-full cursor-pointer hover:bg-blue-300" onClick={
+                  <button className="bg-accent w-[30px] h-[30px] flex items-center justify-center rounded-full cursor-pointer hover:bg-accent-hover" onClick={
                     () => {
                       addToCart(item, -1);
                       setCart(getCart());
@@ -88,7 +88,7 @@ export default function CartPage(){
                       maximumFractionDigits: 2,
                     })}
         </span>
-        <button className="bg-blue-400 w-[150px] h-[50px] rounded-2xl font-semibold text-white  border-blue-400 border-[2px] left-[20px] hover:bg-white hover:text-blue-400 absolute" onClick={
+        <button className="bg-accent w-[150px] h-[50px] rounded-2xl font-semibold text-white  border-accent border-[2px] left-[20px] hover:bg-white hover:text-accent absolute" onClick={
           ()=> {
             navigate("/checkout", {
               state: {items: cart}
