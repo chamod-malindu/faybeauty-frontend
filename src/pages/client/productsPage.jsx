@@ -20,19 +20,15 @@ export default function ProductsPage() {
     [isLoading]
   )
   return (
-  <div className="w-full h-full">
+  <div className="w-full min-h-screen bg-primary">
     {
       isLoading ? <Loader /> : 
-      <div className="w-full h-full flex flex-wrap items-center justify-center gap-[30px] ">
+      <div className="w-full flex flex-wrap items-center justify-center gap-[30px] ">
         {
           products.map(
             (product)=> {
               return(
-                <h1>
-                  {
-                    <ProduactCard key={product.productId} product = {product} />
-                  }
-                </h1>
+                    <ProduactCard key={product.productId} product = {product} />   
               )
             })
         }
