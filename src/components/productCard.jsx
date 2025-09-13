@@ -42,7 +42,7 @@ export default function ProductCard(props) {
                   maximumFractionDigits: 2,
                 })}
               </span>
-              <span className="text-green-600">
+              <span className="text-accent">
                 {product.price.toLocaleString("en-US", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
