@@ -29,34 +29,37 @@ export default function ProductsPage() {
     [isLoading]
 )
   return (
-  <div className="w-full min-h-screen bg-primary">
-    <div className="w-full mb-[30px] mt-[30px] flex justify-center items-center">
-      <input type="text" placeholder="Search Products......." value={query} onChange={
-        (e) => {
-          setQuery(e.target.value);
-          setIsLoading(true);
+    <div className="w-full min-h-screen bg-primary">
+      <div className="w-full mb-[30px] mt-[30px] flex justify-center items-center">
+        <input type="text" placeholder="Search Products......." value={query} onChange={
+          (e) => {
+            setQuery(e.target.value);
+            setIsLoading(true);
+          }
         }
+        className="w-[400px] h-[40px] border-accent border-2 rounded-xl p-2"></input>
+      </div>
+      {
+        isLoading ? (
+          <Loader />
+        ) : (
+          <div className="w-full flex flex-wrap items-center justify-center gap-[30px]">
+            {products.length > 0 ? (
+              products.map((product) => (
+                <ProduactCard key={product.productId} product={product} />
+              ))
+            ) : query ? (
+              <p className="text-accent text-lg mt-6">
+                No products found for "{query}".
+              </p>
+            ) : (
+              <p className="text-accent text-lg mt-6">
+                No products available yet. Please check back later.
+              </p>
+            )}
+          </div>
+        )
       }
-      className="w-[400px] h-[40px] border-accent border-2 rounded-2xl p-2"></input>
     </div>
-    {
-      isLoading ? (
-        <Loader />
-      ) : (
-        <div className="w-full flex flex-wrap items-center justify-center gap-[30px]">
-          {products.length > 0 ? (
-            products.map((product) => (
-              <ProduactCard key={product.productId} product={product} />
-            ))
-          ) : (
-            <p className="text-accent text-lg mt-6">
-              No products found for "{query}".
-            </p>
-          )}
-        </div>
-      )
-      
-    }
-  </div>
   );
 }
