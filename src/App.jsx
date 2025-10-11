@@ -12,6 +12,8 @@ import AdminPage from './pages/adminPage'
 import TestPage from './pages/testPage'
 import { Toaster } from 'react-hot-toast'
 import ClientHomePage from './pages/client/clientHomePage'
+import ForgetPasswordPage from './pages/forgetPasswordPage'
+import ResetPasswordPage from './pages/resetPasswordPage'
 
 
 function App() {
@@ -26,6 +28,8 @@ function App() {
             <Route path="/test" element={<TestPage />}/>
             <Route path="/register" element={<RegisterPage />}/>
             <Route path="/admin/*" element={<AdminPage />}/>
+            <Route path="/forget-password" element={<ForgetPasswordPage />}/>
+            <Route path="/reset-password" element={<ResetPasswordPage />}/>
             <Route path="/*" element={<ClientHomePage />}/>
           </Routes>  
         </div>  
