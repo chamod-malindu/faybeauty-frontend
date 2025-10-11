@@ -1,11 +1,14 @@
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function ForgetPasswordPage() {
   const[emailSent, setEmailSent] = useState(false);
-  const [email, setEmail] = useState("")
+  const[email, setEmail] = useState("");
+  const[OTP, setOTP] = useState("");
+  const navigate = useNavigate();
+
 
   async function sendOTP(){
     try{
@@ -16,6 +19,20 @@ export default function ForgetPasswordPage() {
     }catch(error){
       console.log(error);
       toast.error("Failed to send OTP");
+    }
+  }
+
+  async function verifyOTP(){
+    try{
+      const response = await axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users/verify-otp", { email: email, otp: OTP });
+      toast.success(response.data.message);
+
+      const resetToken = response.data.token;
+      
+      navigate("/reset-password", { state: { resetToken: resetToken } });
+    }catch(error){
+      console.log(error);
+      toast.error(response.data.message);
     }
   }
 
@@ -82,13 +99,15 @@ export default function ForgetPasswordPage() {
             
             {/* Input */}
             <input
-              type="number"
+              type="text"
               placeholder="Enter OTP"
+              value={OTP}
               className="w-[300px] h-[40px] border-2 border-accent rounded-xl px-3 focus:outline-none focus:border-accent-hover focus:ring-2 focus:ring-accent-hover transition"
+              onChange={(e) => setOTP(e.target.value)}
             />
             
             {/* Button */}
-            <button className="w-[300px] h-[40px] bg-accent text-white rounded-xl mt-2 hover:bg-accent-hover transition">
+            <button className="w-[300px] h-[40px] bg-accent text-white rounded-xl mt-2 hover:bg-accent-hover transition" onClick={verifyOTP}>
               Verify OTP
             </button>
             
