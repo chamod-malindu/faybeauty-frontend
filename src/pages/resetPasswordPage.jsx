@@ -1,6 +1,36 @@
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function ResetPasswordPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const[newPassword, setNewPassword] = useState("");
+  const[confirmPassword, setConfirmPassword] = useState("");
+
+  const resetToken = location.state?.resetToken;
+
+  useEffect(() => {
+    if(!resetToken){
+      toast.error("Invalid access to reset password page.");  
+      navigate("/login");
+    }
+
+  },[resetToken, navigate]);
+
+  async function resetPassword(){
+    try{
+      const response = await axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users/reset-password", { resetToken: resetToken, newPassword: newPassword });
+      toast.success(response.data.message);
+      navigate("/login");
+
+    }catch(error){
+      console.log(error);
+      toast.error(response.data.message);
+    }
+  }
+
   return (
     <div className="w-full min-h-screen flex justify-center items-center bg-primary">
       <div className="w-[500px] h-[450px] bg-white shadow-2xl rounded-[30px] flex flex-col justify-center items-center relative gap-[12px] p-6">
@@ -24,18 +54,26 @@ export default function ResetPasswordPage() {
         <input
           type="password"
           placeholder="New Password"
+          value={newPassword}
           className="w-[300px] h-[40px] border-2 border-accent rounded-xl px-3 focus:outline-none focus:border-accent-hover focus:ring-2 focus:ring-accent-hover transition"
+          onChange={(e) => {
+            setNewPassword(e.target.value);
+          }}
         />
         
         {/* Confirm Password Input */}
         <input
           type="password"
           placeholder="Confirm Password"
+          value={confirmPassword}
           className="w-[300px] h-[40px] border-2 border-accent rounded-xl px-3 focus:outline-none focus:border-accent-hover focus:ring-2 focus:ring-accent-hover transition"
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+          }}
         />
         
         {/* Button */}
-        <button className="w-[300px] h-[40px] bg-accent text-white rounded-xl mt-2 hover:bg-accent-hover transition">
+        <button className="w-[300px] h-[40px] bg-accent text-white rounded-xl mt-2 hover:bg-accent-hover transition" onClick={resetPassword}>
           Reset Password
         </button>
         
