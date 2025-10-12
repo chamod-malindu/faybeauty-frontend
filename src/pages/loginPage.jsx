@@ -2,11 +2,31 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react"
 import toast from "react-hot-toast";
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 
 export default function loginPage() {
   const[email, setEmail] = useState("");
   const[password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (response) => {
+      axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users/google-login", { googleToken: response.access_token }).then((res) => {
+        console.log(res);
+        localStorage.setItem("token", res.data.token);
+        toast.success("Login successful!");
+        if(res.data.role == "admin") {
+          navigate("/admin");
+        }else if(res.data.role == "user") {
+          navigate("/");
+        }
+      }
+      ).catch((err) => {
+        console.log(err);
+        toast.error("Google login failed!");
+      });
+    }
+  });
 
   function login() {
     console.log(email, password);
@@ -37,7 +57,7 @@ export default function loginPage() {
 
   return (
     <div className="w-full h-screen bg-[url(./loginbg.jpg)] bg-cover bg-center flex">
-      <div className="w-[500px] h-[500px] backdrop-blur-sm shadow-2xl rounded-[30px] mt-[7%] ml-[9%] relative flex flex-col items-center justify-center gap-[20px]">
+      <div className="w-[500px] h-[500px] backdrop-blur-sm shadow-2xl rounded-[30px] mt-[8%] ml-[9%] relative flex flex-col items-center justify-center gap-[20px]">
         
         {/* Heading */}
         <h1 className="absolute top-[20px] text-2xl font-bold text-accent-hover text-center my-5">
@@ -60,25 +80,33 @@ export default function loginPage() {
           <span className="text-lg text-accent-hover mb-[2px] font-semibold">Password</span>
           <input
             type="password"
-            className="w-[350px] h-[40px] border border-accent rounded-xl focus:text-white focus:pl-[10px]"
+            className="w-[350px] h-[40px] text-accent-hover border pl-[10px] border-accent rounded-xl focus:text-white focus:pl-[10px]"
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
         {/* Forget Password Link */}
+        <div className="w-[350px] relative mb-[7px]">
         <Link
           to="/forget-password"
-          className="absolute left-[77px] top-[280px] text-accent text-[14px] hover:text-white"
+          className="absolute left-[0px] text-accent text-[14px] hover:text-white"
         >
           Forget Password?
         </Link>
+        </div>
 
         {/* Login Button */}
         <button
-          className="w-[350px] h-[40px] bg-accent-hover rounded-xl mt-5 text-lg text-white hover:bg-accent hover:border-accent hover:border cursor-pointer transition-all duration-300"
+          className="w-[350px] h-[40px] bg-accent-hover rounded-xl text-lg text-white hover:bg-accent hover:border-accent hover:border cursor-pointer transition-all duration-300"
           onClick={login}
         >
           Login Now
+        </button>
+        <button
+          className="w-[350px] h-[40px] bg-accent-hover rounded-xl text-lg text-white hover:bg-accent hover:border-accent hover:border cursor-pointer transition-all duration-300"
+          onClick={googleLogin}
+        >
+          Google Login
         </button>
 
         {/* Sign Up Link */}
