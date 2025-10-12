@@ -14,6 +14,7 @@ import { Toaster } from 'react-hot-toast'
 import ClientHomePage from './pages/client/clientHomePage'
 import ForgetPasswordPage from './pages/forgetPasswordPage'
 import ResetPasswordPage from './pages/resetPasswordPage'
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
 function App() {
@@ -21,18 +22,20 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="w-full min-h-screen bg-primary text-secondary">
-          <Toaster position='top-right' reverseOrder={true} />
-          <Routes path="/">
-            <Route path="/login" element={<LoginPage />}/>
-            <Route path="/test" element={<TestPage />}/>
-            <Route path="/register" element={<RegisterPage />}/>
-            <Route path="/admin/*" element={<AdminPage />}/>
-            <Route path="/forget-password" element={<ForgetPasswordPage />}/>
-            <Route path="/reset-password" element={<ResetPasswordPage />}/>
-            <Route path="/*" element={<ClientHomePage />}/>
-          </Routes>  
-        </div>  
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <div className="w-full min-h-screen bg-primary text-secondary">
+            <Toaster position='top-right' reverseOrder={true} />
+            <Routes path="/">
+              <Route path="/login" element={<LoginPage />}/>
+              <Route path="/test" element={<TestPage />}/>
+              <Route path="/register" element={<RegisterPage />}/>
+              <Route path="/admin/*" element={<AdminPage />}/>
+              <Route path="/forget-password" element={<ForgetPasswordPage />}/>
+              <Route path="/reset-password" element={<ResetPasswordPage />}/>
+              <Route path="/*" element={<ClientHomePage />}/>
+            </Routes>  
+        </div> 
+        </GoogleOAuthProvider> 
     </BrowserRouter>
   )
 }
