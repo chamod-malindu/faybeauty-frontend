@@ -20,6 +20,16 @@ export default function ResetPasswordPage() {
   },[resetToken, navigate]);
 
   async function resetPassword(){
+    if (!newPassword || !confirmPassword) {
+      toast.error("Please fill in both password fields");
+      return;
+    }
+  
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     try{
       const response = await axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users/reset-password", { resetToken: resetToken, newPassword: newPassword });
       toast.success(response.data.message);
