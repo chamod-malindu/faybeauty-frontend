@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { TiShoppingCart } from "react-icons/ti";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HiHome } from "react-icons/hi";
@@ -7,10 +7,27 @@ import { BiStore } from "react-icons/bi";
 import { FaInfoCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { MdContactSupport, MdRateReview } from "react-icons/md";
+import { getCart } from "../utils/cart";
 
 export default function Header() {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const[isOpen, setIsOpen] = useState(false);
+  const[cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    loadCartCount();
+  }, [location.pathname])
+
+  async function loadCartCount() {
+    try {
+      const cart = await getCart();
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(totalItems);
+    } catch (error) {
+      console.error("Error loading cart count:", error);
+    }
+  }
 
   return (
     <header className="w-full h-[100px] bg-accent flex justify-center items-center text-white text-2xl mb-[20px] relative">
@@ -93,6 +110,12 @@ export default function Header() {
               >
                 <TiShoppingCart className="text-accent text-2xl mr-3 hover:text-accent-hover transition-colors" />
                 Cart
+
+                {cartCount > 0 && (
+                  <span className="absolute top-[-8px] left-[18px] bg-red-500 text-white text-xs rounded-full w-[20px] h-[20px] flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                  )}
               </button>
             </div>
           </div>
@@ -133,6 +156,11 @@ export default function Header() {
           className="absolute right-[20px] md:right-[50px] hover:text-secondary transition-colors flex flex-row items-center"
         >
           <TiShoppingCart className="text-3xl" />
+          {cartCount > 0 && (
+            <span className="absolute top-[-8px] right-[-8px] bg-red-500 text-white text-xs rounded-full w-[22px] h-[22px] flex items-center justify-center font-bold">
+              {cartCount}
+            </span>
+          )}
         </Link>
     </header>
   );
