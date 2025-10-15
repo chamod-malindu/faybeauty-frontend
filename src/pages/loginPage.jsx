@@ -9,6 +9,7 @@ export default function loginPage() {
   const[email, setEmail] = useState("");
   const[password, setPassword] = useState("");
   const navigate = useNavigate();
+  const[isLoading, setIsLoading] = useState(false);
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (response) => { 
@@ -37,7 +38,7 @@ export default function loginPage() {
       } catch (err) {
         console.error(err);
         toast.error("Google login failed!");
-        
+
       } finally {
         setIsLoading(false);
       }
