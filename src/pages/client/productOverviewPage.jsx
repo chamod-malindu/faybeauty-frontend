@@ -80,10 +80,15 @@ export default function ProductOverviewPage() {
                 }
               }>Buy Now</button>
               <button className="w-[200px] h-[50px] cursor-pointer rounded-xl shadow-2xl text-white bg-accent-hover border-[3px] border-accent-hover hover:bg-white hover:text-accent-hover" onClick={
-                ()=> {
-                  addToCart(product, 1);
-                  toast.success("Product added to cart");
-                  console.log(getCart());
+                async ()=> {
+                  try{
+                    await addToCart(product, 1);
+                    toast.success("Product added to cart");
+
+                  }catch(error){
+                    console.log(error);
+                    toast.error("Failed to add product to cart");
+                  }
                 }
               }>Add to Cart</button>
             </div>
