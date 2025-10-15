@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { addToCart, getCart, getTotal } from "../../utils/cart"
+import { addToCart, clearCart, getCart, getTotal } from "../../utils/cart"
 import { FaPlus } from "react-icons/fa6";
 import { HiMiniMinus } from "react-icons/hi2";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -91,6 +91,9 @@ export default function CheckoutPage(){
                 Authorization: `Bearer ${token}`,
             }
         });
+
+        await clearCart();
+        
         toast.success("Order placed successfully");
         navigate("/");
 

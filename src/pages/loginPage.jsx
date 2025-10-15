@@ -3,39 +3,60 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react"
 import toast from "react-hot-toast";
 import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+import { mergeCartOnLogin } from "../utils/cart";
 
 export default function loginPage() {
   const[email, setEmail] = useState("");
   const[password, setPassword] = useState("");
   const navigate = useNavigate();
+  const[isLoading, setIsLoading] = useState(false);
 
   const googleLogin = useGoogleLogin({
-    onSuccess: (response) => {
-      axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users/google-login", { googleToken: response.access_token }).then((res) => {
+    onSuccess: async (response) => { 
+      try {
+        setIsLoading(true);
+        const res = await axios.post(import.meta.env.VITE_BACKEND_URL + "/api/users/google-login",{ googleToken: response.access_token });
+
         console.log(res);
-        localStorage.setItem("token", res.data.token);
+        const token = res.data.token;
+        localStorage.setItem("token", token);
+
+
+        if (res.data.role === "user") {
+          await mergeCartOnLogin(token);
+        }
+
         toast.success("Login successful!");
-        if(res.data.role == "admin") {
+
+        if (res.data.role === "admin") {
           navigate("/admin");
-        }else if(res.data.role == "user") {
+
+        } else if (res.data.role === "user") {
           navigate("/");
         }
-      }
-      ).catch((err) => {
-        console.log(err);
+
+      } catch (err) {
+        console.error(err);
         toast.error("Google login failed!");
-      });
+
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    onError: () => {
+      toast.error("Google login failed!");
     }
   });
 
-  function login() {
+  async function login() {
     console.log(email, password);
     axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users/login", {
       email: email,
       password: password
     }).then(
-      (response) => {
+      async (response) => {
         console.log(response);
+        const token = response.data.token;
         localStorage.setItem("token", response.data.token);
 
         toast.success("Login successful!");
@@ -43,8 +64,16 @@ export default function loginPage() {
           //window.location.href = "/admin";
           navigate("/admin");
         }else if(response.data.role == "user") {
-          //window.location.href = "/";
-          navigate("/");
+          try {
+            await mergeCartOnLogin(token);
+            //window.location.href = "/";
+            navigate("/");
+
+          }catch(error) {
+            console.log(error);
+            toast.error("Login failed!");
+          }
+          
         }
       }
     ).catch

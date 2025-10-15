@@ -1,13 +1,78 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { addToCart, getCart, getTotal } from "../../utils/cart"
 import { FaPlus } from "react-icons/fa6";
 import { HiMiniMinus } from "react-icons/hi2";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function CartPage(){
-  const[cart, setCart] = useState(getCart());
+  const[cart, setCart] = useState([]);
   const navigate= useNavigate();
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true); 
+
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  async function loadCart() {
+    try {
+      setLoading(true);
+      const cartData = await getCart();
+      setCart(cartData);
+      const totalAmount = await getTotal();
+      setTotal(totalAmount);
+    } catch (error) {
+      console.error("Error loading cart:", error);
+      toast.error("Failed to load cart");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateCart(item, quantityChange) {
+    try {
+      await addToCart(item, quantityChange);
+      await loadCart();
+    } catch (error) {
+      console.error("Error updating cart:", error);
+      toast.error("Failed to update cart");
+    }
+  }
+
+  async function removeItem(item) {
+    try {
+      await addToCart(item, -item.quantity);
+      await loadCart();
+      toast.success("Item removed from cart");
+    } catch (error) {
+      console.error("Error removing item:", error);
+      toast.error("Failed to remove item");
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center bg-primary">
+        <div className="text-xl">Loading cart...</div>
+      </div>
+    );
+  }
+
+  if (cart.length === 0) {
+    return (
+      <div className="w-full h-screen flex flex-col justify-center items-center bg-primary gap-4">
+        <div className="text-2xl font-bold">Your cart is empty</div>
+        <button 
+          className="bg-accent text-white px-6 py-3 rounded-lg hover:bg-accent-hover"
+          onClick={() => navigate("/products")}
+        >
+          Continue Shopping
+        </button>
+      </div>
+    );
+  }
 
   console.log(cart);
   return(
@@ -41,8 +106,7 @@ export default function CartPage(){
                       <button 
                         className="absolute top-[10px] right-[10px] w-[25px] h-[25px] rounded-full bg-red-500 flex justify-center items-center border-red-500 border-[2px] text-white hover:bg-white cursor-pointer hover:text-red-500" 
                         onClick={() => {
-                          addToCart(item, -item.quantity);
-                          setCart(getCart());
+                          removeItem(item)
                         }}
                       >
                         <FaRegTrashCan className="text-xs" />
@@ -57,8 +121,7 @@ export default function CartPage(){
                       <button 
                         className="bg-accent w-[30px] h-[30px] flex items-center justify-center rounded-full cursor-pointer hover:bg-accent-hover text-white" 
                         onClick={() => {
-                          addToCart(item, -1);
-                          setCart(getCart());
+                          updateCart(item, -1)
                         }}
                       >
                         <HiMiniMinus className="font-semibold"/>
@@ -71,8 +134,7 @@ export default function CartPage(){
                       <button 
                         className="bg-accent w-[30px] h-[30px] flex items-center justify-center rounded-full cursor-pointer hover:bg-accent-hover text-white" 
                         onClick={() => {
-                          addToCart(item, 1);
-                          setCart(getCart());
+                          updateCart(item, 1)
                         }}
                       >
                         <FaPlus className="font-semibold"/>
@@ -113,8 +175,7 @@ export default function CartPage(){
                     <button 
                       className="bg-accent w-[30px] h-[30px] flex items-center justify-center rounded-full cursor-pointer hover:bg-accent-hover text-white" 
                       onClick={() => {
-                        addToCart(item, 1);
-                        setCart(getCart());
+                        updateCart(item, 1)
                       }}
                     >
                       <FaPlus className="font-semibold"/>
@@ -125,8 +186,7 @@ export default function CartPage(){
                     <button 
                       className="bg-accent w-[30px] h-[30px] flex items-center justify-center rounded-full cursor-pointer hover:bg-accent-hover text-white" 
                       onClick={() => {
-                        addToCart(item, -1);
-                        setCart(getCart());
+                        updateCart(item, -1)
                       }}
                     >
                       <HiMiniMinus className="font-semibold"/>
@@ -148,8 +208,7 @@ export default function CartPage(){
                     <button 
                       className="w-[30px] h-[30px] rounded-full bg-red-500 flex justify-center items-center absolute right-[-40px] border-red-500 border-[2px] text-white hover:bg-white cursor-pointer hover:text-red-500" 
                       onClick={() => {
-                        addToCart(item, -item.quantity);
-                        setCart(getCart());
+                        removeItem(item)
                       }}
                     >
                       <FaRegTrashCan />
@@ -182,7 +241,7 @@ export default function CartPage(){
           <span className="text-sm md:hidden text-gray-600">Grand Total:</span>
           <span className="font-bold text-xl md:text-2xl">
             <span className="hidden md:inline">Total: </span>
-            Rs:{getTotal().toLocaleString("en-US", {
+            Rs:{total.toLocaleString("en-US", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
