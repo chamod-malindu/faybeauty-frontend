@@ -157,3 +157,28 @@ export async function mergeCartOnLogin(token) {
   }
 }
 
+// Clear cart on order placement
+export async function clearCart() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    localStorage.setItem("cart", "[]");
+    console.log("Guest cart cleared from localStorage");
+
+  } else {
+    try {
+      const response = await axios.delete(import.meta.env.VITE_BACKEND_URL+"/api/cart/clear",
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
+      console.log("Backend cart cleared:", response.data);
+
+    } catch (error) {
+
+      console.error("Failed to clear backend cart:", error);
+      throw error; // Re-throw so we know if it fails
+    }
+  }
+}
