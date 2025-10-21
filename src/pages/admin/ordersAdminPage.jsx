@@ -40,7 +40,7 @@ export default function OrdersAdminPage(){
       ).catch(
         (err) => {
           console.error(err);
-
+          setIsLoading(false);
         }
       )
     }
@@ -129,6 +129,7 @@ export default function OrdersAdminPage(){
                 </select>
               </p>
               <p><b>Date:</b> {new Date(clickedOrder.date).toLocaleString()}</p>
+              <p><b>Estimated Delivery:</b> {new Date(clickedOrder.estimatedDeliveryDate).toLocaleDateString()}</p>
               <p>
                 <b>Note:</b> {clickedOrder.note}
                 <textarea className="w-full border-[2px] rounded-[5px] mt-[5px]" value={orderNotes} onChange={
