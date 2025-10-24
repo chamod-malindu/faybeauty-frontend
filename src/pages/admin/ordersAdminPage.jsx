@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Paginator from "../../components/paginator";
 import { MdClose } from "react-icons/md";
+import isAdmin from "../../utils/isAdmin";
 
 export default function OrdersAdminPage(){
   const navigate = useNavigate();
@@ -19,10 +20,13 @@ export default function OrdersAdminPage(){
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log(token);
 
     if(!token){
       navigate("/login");
     }
+
+
     if(isLoading){
       axios.get(import.meta.env.VITE_BACKEND_URL+"/api/orders/"+page+"/"+limit,
       {
@@ -32,10 +36,16 @@ export default function OrdersAdminPage(){
 
       }).then(
         (res) => {
+          if(!isAdmin(res)){
+            toast.error("Unauthorized Access");
+            navigate("/login");
+            return;
+          }
           setOrders(res.data.orders);
           setTotalPages(res.data.totalPages);
           console.log(res.data)
-          setIsLoading(false);
+          setIsLoading(false);  
+          
         }
       ).catch(
         (err) => {

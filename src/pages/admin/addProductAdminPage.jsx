@@ -3,6 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import uploadFile from "../../utils/mediaUpload";
+import isAdmin from "../../utils/isAdmin";
 
 export default function AddProductAdminPage() {
   const [productId, setProductId] = useState("");
@@ -57,6 +58,11 @@ export default function AddProductAdminPage() {
       }
     }
     ).then((res) => {
+      if(!isAdmin(res)){
+        toast.error("Unauthorized Access");
+        navigate("/login");
+        return;
+      }
       console.log("Product Was Successfully Created");
       console.log(res.data);
       toast.success("Product created successfully!");
