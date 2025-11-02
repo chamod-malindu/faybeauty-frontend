@@ -14,10 +14,12 @@ export default function ProductOverviewPage() {
 
   useEffect(
     () => {
+
       if(status == "loading") {
-        axios.get(import.meta.env.VITE_BACKEND_URL+`/api/products/${params.productId}`).then(
+        axios.get(import.meta.env.VITE_BACKEND_URL+`/api/products/${params.productId}`,
+        ).then(
           (res) => {
-            setProduct(res.data);
+            setProduct(res.data.product);
             setStatus("success");
           }
         ).catch(
@@ -37,7 +39,7 @@ export default function ProductOverviewPage() {
       {
         status == "success" && <div className="w-full flex flex-col md:flex-row">
           <div className="md:hidden px-[15px] flex justify-center items-center text-center mb-[20px]">
-              <h1 className="text-2xl font-bold">{product.name} <span className="font-light">{product.altNames.join(" | ")}</span>
+              <h1 className="text-2xl font-bold">{product.name} {product.altNames && product.altNames.length > 0 && <span className="font-light">{product.altNames.join(" | ")}</span>}
               </h1>
             </div> 
           <div className="w-[full] md:w-[49%] flex flex-col justify-center items-center">

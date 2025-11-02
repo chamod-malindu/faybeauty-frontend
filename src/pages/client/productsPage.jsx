@@ -14,7 +14,7 @@ export default function ProductsPage() {
         if(query == ""){
           axios.get(import.meta.env.VITE_BACKEND_URL+"/api/products").then(
             (res)=> {
-              setProduct(res.data);
+              setProduct(res.data.products);
               setIsLoading(false);
           })  
         }else{
