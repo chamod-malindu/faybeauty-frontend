@@ -1,8 +1,9 @@
+import { FaStar } from "react-icons/fa";
 
-export default function ReviewPopup({ item, onClose }){
+export default function ReviewPopup({ index, item, onClose, setRating, rating, setComment, comment, handleSubmitReview }){
   return(
     <div>
-      <div className="fixed top-0 left-0 w-full h-full bg-[#00000050] flex justify-center items-center z-50">
+      <div key={index} className="fixed top-0 left-0 w-full h-full bg-[#00000050] flex justify-center items-center z-50">
         <div className="w-[400px] bg-white rounded-2xl p-6 relative">
           {/* Close button */}
           <button 
@@ -33,9 +34,10 @@ export default function ReviewPopup({ item, onClose }){
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
-                  className="text-4xl focus:outline-none transition-colors"
+                  className="text-4xl focus:outline-none transition-colors cursor-pointer"
+                  onClick={ () => {setRating(star)}}
                 >
-                  <span className="text-gray-300">☆</span>
+                  <span className={`${rating >= star ? "text-yellow-500" : "text-gray-300"}`}><FaStar /></span>
                 </button>
               ))}
             </div>
@@ -47,6 +49,7 @@ export default function ReviewPopup({ item, onClose }){
             <textarea 
               placeholder="Share your thoughts about this order..."
               className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm h-24 resize-none focus:outline-none focus:border-purple-500"
+              onChange={ (e) => {setComment(e.target.value)}}
             />
           </div>
 
@@ -60,6 +63,7 @@ export default function ReviewPopup({ item, onClose }){
             </button>
             <button 
               className="flex-1 bg-accent-hover text-white font-medium py-2 rounded-lg border-2 hover:bg-white hover:text-accent-hover hover:border-2 hover:border-accent-hover transition-colors hover:cursor-pointer"
+              onClick={ () => handleSubmitReview(rating, comment)}
             >
               Submit Review
             </button>
