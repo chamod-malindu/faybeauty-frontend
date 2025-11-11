@@ -1,12 +1,13 @@
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { RiArrowDropDownLine } from "react-icons/ri";
-import { useEffect, useState } from "react";
+import { cache, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/loader";
 import { TbTruckDelivery } from "react-icons/tb";
 import { MdOutlineWatchLater } from "react-icons/md";
 import ReviewPopup from "../../components/review/reviewPopup";
+import toast from "react-hot-toast";
 
 export default function OrdersHistoryPage() {
   const navigate = useNavigate();
@@ -22,9 +23,11 @@ export default function OrdersHistoryPage() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
+  const [reviewSent, setReviewSent] = useState(false);
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
 
     if(!token){
       navigate("/login");
@@ -49,12 +52,44 @@ export default function OrdersHistoryPage() {
 
     }).catch((err) => {
       console.error(err);
-      isLoading(false);
+      setIsLoading(false);
     });
 
     }
     
   }, [isLoading, page]);
+
+  async function handleSubmitReview(rating, comment) {
+    try{
+      console.log("selectedItem:", selectedItem);
+
+      await axios.post(import.meta.env.VITE_BACKEND_URL + "/api/reviews", {
+        productId: selectedItem.productId,
+        rating: rating,
+        comment: comment,
+
+      },{
+          headers: {
+                Authorization: `Bearer ${token}`,
+            } 
+      }).then((res) => {
+        console.log("Review submitted successfully:", res.data);
+        toast.success("Review submitted successfully!");
+        setPopupVisible(false);
+        setReviewSent(true);
+        setRating(0);
+        setComment("");
+
+      }).catch((err) => {
+        console.error("Failed to submit review:", err);
+        toast.error("Failed to submit review.");
+      });
+
+
+    }catch(error){
+      console.error("Failed to submit review:", error);
+    }
+  }
 
   return(
     <div className="w-full min-h-screen flex flex-col items-center bg-primary pb-17 pt-5 px-4 relative">
@@ -119,7 +154,7 @@ export default function OrdersHistoryPage() {
                     {/* Items List */}
                     {order.items.map((item, index) => {
                       return(
-                        <>
+                        
                           <div key={index} className="space-y-4 mb-4">
                             <div className="flex justify-between items-center py-3 border-b border-gray-100">
                               <div className="flex items-center gap-4">
@@ -137,18 +172,18 @@ export default function OrdersHistoryPage() {
                                   setSelectedItem(item);
                                 }}
                                 >
-                                  Leave a Review
+                                  {!reviewSent ? "Leave a Review" : "Review Sent"}
                                 </button>
                               </div>
                             </div>
                           </div>        
-                      </>)
+                      )
                     })}
 
                     {/* Review popup */}
                       {
                         popupVisible && selectedItem &&(
-                          <ReviewPopup item={selectedItem} onClose={ () => setPopupVisible(false) } />
+                          <ReviewPopup item={selectedItem} onClose={ () => setPopupVisible(false) } rating={rating} setRating={setRating} comment={comment} setComment={setComment} handleSubmitReview={handleSubmitReview} index={index} />
                         )
                       }
 
