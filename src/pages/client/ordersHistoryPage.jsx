@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../../components/loader";
 import { TbTruckDelivery } from "react-icons/tb";
 import { MdOutlineWatchLater } from "react-icons/md";
+import ReviewPopup from "../../components/review/reviewPopup";
 
 export default function OrdersHistoryPage() {
   const navigate = useNavigate();
@@ -17,6 +18,10 @@ export default function OrdersHistoryPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [orderCount, setOrderCount] = useState(0);
   const [popupVisible, setPopupVisible] = useState(false);
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -114,6 +119,7 @@ export default function OrdersHistoryPage() {
                     {/* Items List */}
                     {order.items.map((item, index) => {
                       return(
+                        <>
                           <div key={index} className="space-y-4 mb-4">
                             <div className="flex justify-between items-center py-3 border-b border-gray-100">
                               <div className="flex items-center gap-4">
@@ -123,11 +129,28 @@ export default function OrdersHistoryPage() {
                                   <span className="text-sm text-secondary/60">Qty: {item.quantity}</span>
                                 </div>
                               </div>
-                              <p className="font-semibold text-secondary">Rs.{item.quantity * item.price}</p>
+                              <div className="flex flex-col items-end">
+                                <p className="font-semibold text-secondary">Rs.{item.quantity * item.price}</p>
+                                <button className={`${order.status === "Pending" ? "hidden" : "font-bold text-accent-hover hover:text-accent cursor-pointer" }`}
+                                onClick={() => {
+                                  setPopupVisible(true);
+                                  setSelectedItem(item);
+                                }}
+                                >
+                                  Leave a Review
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                      )
+                          </div>        
+                      </>)
                     })}
+
+                    {/* Review popup */}
+                      {
+                        popupVisible && selectedItem &&(
+                          <ReviewPopup item={selectedItem} onClose={ () => setPopupVisible(false) } />
+                        )
+                      }
 
                         {/* Delivery Info */}
                         <div className="flex justify-between border-t-2 border-accent-hover gap-6 pt-5 mb-6">
@@ -147,80 +170,13 @@ export default function OrdersHistoryPage() {
 
                         {/* Action Buttons */}
                         <div className="flex gap-4 pt-4">
-                          {order.status === "Pending" ? 
-                           (
-                            <button className="flex-1 bg-red-500 border-2 border-gray-200 text-white font-medium py-3 rounded-lg hover:bg-gray-50 hover:border-red-500 hover:text-red-500 hover:cursor-pointer transition-colors">
-                            Cancel Order
-                            </button>
-                           ) : (
-                            // Review Button
-                            <button className="flex-1 bg-accent border-2 border-gray-200 text-white font-medium py-3 rounded-lg hover:bg-gray-50 hover:border-accent hover:text-accent hover:cursor-pointer transition-colors"
-                            onClick={() => setPopupVisible(true)}>
-                            Leave a Review
-                            </button>
-                           )
-                          }
-
-                          {/* Review popup */}
-                          {
-                            popupVisible && (
-                              <div className="fixed top-0 left-0 w-full h-full bg-[#00000050] flex justify-center items-center z-50">
-                                <div className="w-[400px] bg-white rounded-2xl p-6 relative">
-                                  {/* Close button */}
-                                  <button 
-                                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl"
-                                    onClick={ () => setPopupVisible(false)}
-                                  >
-                                    ×
-                                  </button>
-
-                                  {/* Header */}
-                                  <div className="mb-5">
-                                    <h2 className="text-xl font-bold text-gray-800">Rate & Review</h2>
-                                    <h3 className="text-sm text-gray-500">Share your experience with this order</h3>
-                                  </div>
-
-                                  {/* Rating */}
-                                  <div className="mb-3">
-                                    <h2 className="text-sm font-semibold text-gray-700 mb-1">Rating</h2>
-                                    <div className="flex gap-2">
-                                      {[1, 2, 3, 4, 5].map((star) => (
-                                        <button
-                                          key={star}
-                                          className="text-4xl focus:outline-none transition-colors"
-                                        >
-                                          <span className="text-gray-300">☆</span>
-                                        </button>
-                                      ))}
-                                    </div>
-                                  </div>
-
-                                  {/* Your Review */}
-                                  <div className="mb-6">
-                                    <h2 className="text-sm font-semibold text-gray-700 mb-2">Your Review</h2>
-                                    <textarea 
-                                      placeholder="Share your thoughts about this order..."
-                                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm h-24 resize-none focus:outline-none focus:border-purple-500"
-                                    />
-                                  </div>
-
-                                  {/* Buttons */}
-                                  <div className="flex gap-3">
-                                    <button 
-                                      className="flex-1 border-2 border-gray-300 text-gray-700 font-medium py-2 rounded-lg hover:bg-gray-200 transition- hover:cursor-pointer"
-                                    >
-                                      Cancel
-                                    </button>
-                                    <button 
-                                      className="flex-1 bg-accent-hover text-white font-medium py-2 rounded-lg border-2 hover:bg-white hover:text-accent-hover hover:border-2 hover:border-accent-hover transition-colors hover:cursor-pointer"
-                                    >
-                                      Submit Review
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            )
-                          }
+                          <button 
+                          disabled={order.status !== "Pending"}
+                          className={`flex-1 bg-red-500 border-2 border-gray-200 text-white font-medium py-3 rounded-lg   ${order.status !== "Pending" ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 hover:border-red-500 hover:text-red-500 hover:cursor-pointer"}  transition-colors`}>
+                          Cancel Order
+                          </button>
+                           
+                          
                           <button className="flex-1 bg-white border-2 border-gray-200 text-secondary font-medium py-3 rounded-lg hover:bg-gray-300 hover:cursor-pointer hover:text-white transition-colors">
                             Contact Support
                           </button>
