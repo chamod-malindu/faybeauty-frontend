@@ -104,7 +104,6 @@ export default function CheckoutPage(){
     }
   }
 
-  console.log(cart);
   return(
     <div className="w-full min-h-screen pb-[10px] flex flex-col bg-primary items-center gap-[20px] md:gap-[30px] my-[20px] text-secondary px-[15px] md:px-0">
       

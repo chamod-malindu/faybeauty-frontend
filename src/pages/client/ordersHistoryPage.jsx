@@ -1,11 +1,13 @@
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { RiArrowDropDownLine } from "react-icons/ri";
-import { useEffect, useState } from "react";
+import { cache, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/loader";
 import { TbTruckDelivery } from "react-icons/tb";
 import { MdOutlineWatchLater } from "react-icons/md";
+import ReviewPopup from "../../components/review/reviewPopup";
+import toast from "react-hot-toast";
 
 export default function OrdersHistoryPage() {
   const navigate = useNavigate();
@@ -16,9 +18,16 @@ export default function OrdersHistoryPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [orderCount, setOrderCount] = useState(0);
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [reviewSent, setReviewSent] = useState(false);
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
 
     if(!token){
       navigate("/login");
@@ -43,12 +52,44 @@ export default function OrdersHistoryPage() {
 
     }).catch((err) => {
       console.error(err);
-      isLoading(false);
+      setIsLoading(false);
     });
 
     }
     
   }, [isLoading, page]);
+
+  async function handleSubmitReview(rating, comment) {
+    try{
+      console.log("selectedItem:", selectedItem);
+
+      await axios.post(import.meta.env.VITE_BACKEND_URL + "/api/reviews", {
+        productId: selectedItem.productId,
+        rating: rating,
+        comment: comment,
+
+      },{
+          headers: {
+                Authorization: `Bearer ${token}`,
+            } 
+      }).then((res) => {
+        console.log("Review submitted successfully:", res.data);
+        toast.success("Review submitted successfully!");
+        setPopupVisible(false);
+        setReviewSent(true);
+        setRating(0);
+        setComment("");
+
+      }).catch((err) => {
+        console.error("Failed to submit review:", err);
+        toast.error("Failed to submit review.");
+      });
+
+
+    }catch(error){
+      console.error("Failed to submit review:", error);
+    }
+  }
 
   return(
     <div className="w-full min-h-screen flex flex-col items-center bg-primary pb-17 pt-5 px-4 relative">
@@ -100,7 +141,7 @@ export default function OrdersHistoryPage() {
                       )}
                       className="text-secondary/40 hover:text-secondary transition-colors"
                     >
-                      <RiArrowDropDownLine className={`text-[50px] transition-transform ${isExpanded[order.orderId] ? "rotate-180" : ""}`} />
+                      <RiArrowDropDownLine className={`text-[50px] transition-transform ${isExpanded[order.orderId] ? "rotate-180" : ""} hover:text-secondary hover:cursor-pointer`} />
                     </button>
                   </div>
                 </div>
@@ -113,6 +154,7 @@ export default function OrdersHistoryPage() {
                     {/* Items List */}
                     {order.items.map((item, index) => {
                       return(
+                        
                           <div key={index} className="space-y-4 mb-4">
                             <div className="flex justify-between items-center py-3 border-b border-gray-100">
                               <div className="flex items-center gap-4">
@@ -122,11 +164,28 @@ export default function OrdersHistoryPage() {
                                   <span className="text-sm text-secondary/60">Qty: {item.quantity}</span>
                                 </div>
                               </div>
-                              <p className="font-semibold text-secondary">Rs.{item.quantity * item.price}</p>
+                              <div className="flex flex-col items-end">
+                                <p className="font-semibold text-secondary">Rs.{item.quantity * item.price}</p>
+                                <button className={`${order.status === "Pending" ? "hidden" : "font-bold text-accent-hover hover:text-accent cursor-pointer" }`}
+                                onClick={() => {
+                                  setPopupVisible(true);
+                                  setSelectedItem(item);
+                                }}
+                                >
+                                  {!reviewSent ? "Leave a Review" : "Review Sent"}
+                                </button>
+                              </div>
                             </div>
-                          </div>
+                          </div>        
                       )
                     })}
+
+                    {/* Review popup */}
+                      {
+                        popupVisible && selectedItem &&(
+                          <ReviewPopup item={selectedItem} onClose={ () => setPopupVisible(false) } rating={rating} setRating={setRating} comment={comment} setComment={setComment} handleSubmitReview={handleSubmitReview} index={index} />
+                        )
+                      }
 
                         {/* Delivery Info */}
                         <div className="flex justify-between border-t-2 border-accent-hover gap-6 pt-5 mb-6">
@@ -146,10 +205,14 @@ export default function OrdersHistoryPage() {
 
                         {/* Action Buttons */}
                         <div className="flex gap-4 pt-4">
-                          <button className="flex-1 bg-white border-2 border-gray-200 text-secondary font-medium py-3 rounded-lg hover:bg-gray-50 transition-colors">
-                            Cancel Order
+                          <button 
+                          disabled={order.status !== "Pending"}
+                          className={`flex-1 bg-red-500 border-2 border-gray-200 text-white font-medium py-3 rounded-lg   ${order.status !== "Pending" ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 hover:border-red-500 hover:text-red-500 hover:cursor-pointer"}  transition-colors`}>
+                          Cancel Order
                           </button>
-                          <button className="flex-1 bg-white border-2 border-gray-200 text-secondary font-medium py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                           
+                          
+                          <button className="flex-1 bg-white border-2 border-gray-200 text-secondary font-medium py-3 rounded-lg hover:bg-gray-300 hover:cursor-pointer hover:text-white transition-colors">
                             Contact Support
                           </button>
                         </div>

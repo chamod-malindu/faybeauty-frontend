@@ -6,23 +6,20 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { FaRegEdit } from "react-icons/fa";
 import Loader from "../../components/loader";
-import isAdmin from "../../utils/isAdmin";
 
 export default function ProductsAdminPage() {
   const[products, setProducts] = useState([]);
   const[isLoading, setIsLoading] = useState(true);
 
   useEffect(
-    () => {
+      () => {
       if(isLoading){
-        axios.get(import.meta.env.VITE_BACKEND_URL+"/api/products").then(
+        axios.get(import.meta.env.VITE_BACKEND_URL+"/api/products",
+        ).then(
           (res) => {
-            if(!isAdmin(res)){
-              toast.error("Unauthorized Access");
-              navigate("/login");
-              return;
-            }
-            setProducts(res.data);
+            console.log(res.data);
+            console.log(res.data.products);
+            setProducts(res.data.products);
             setIsLoading(false);
           }
           )
