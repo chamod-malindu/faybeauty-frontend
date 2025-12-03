@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaSearch, FaCheckCircle } from 'react-icons/fa';
+import TitleHeaderDashboard from '../../components/TitleHeader';
 
 export default function UserManagementPage() {
   const initialUsers = [
@@ -36,10 +37,8 @@ export default function UserManagementPage() {
 
   return (
     <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">User Management</h1>
-        <p className="text-gray-600 mt-1">Manage and monitor all user accounts</p>
-      </div>
+
+      <TitleHeaderDashboard title="User Management" subtitle="Manage and monitor all user accounts" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-white flex items-center p-4 rounded-lg shadow-sm border border-gray-200">
@@ -71,25 +70,25 @@ export default function UserManagementPage() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-4 p-4">
-        <div className="flex gap-2">
+        <div className="flex gap-2 ">
           <button 
             onClick={() => setFilterStatus('all')}
-            className={`px-4 py-2 rounded-lg ${filterStatus === 'all' ? 'bg-accent text-white' : 'bg-gray-100 text-gray-700'}`}>
+            className={`px-4 py-2 rounded-lg cursor-pointer ${filterStatus === 'all' ? 'bg-accent text-white' : 'bg-gray-100 text-gray-700'}`}>
             All Users
           </button>
           <button 
             onClick={() => setFilterStatus('active')}
-            className={`px-4 py-2 rounded-lg ${filterStatus === 'active' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
+            className={`px-4 py-2 rounded-lg cursor-pointer ${filterStatus === 'active' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
             Active
           </button>
           <button 
             onClick={() => setFilterStatus('inactive')}
-            className={`px-4 py-2 rounded-lg ${filterStatus === 'inactive' ? 'bg-gray-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
+            className={`px-4 py-2 rounded-lg cursor-pointer ${filterStatus === 'inactive' ? 'bg-gray-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
             Inactive
           </button>
           <button 
             onClick={() => setFilterStatus('blocked')}
-            className={`px-4 py-2 rounded-lg ${filterStatus === 'blocked' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
+            className={`px-4 py-2 rounded-lg cursor-pointer ${filterStatus === 'blocked' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
             Blocked
           </button>
         </div>
@@ -129,7 +128,7 @@ export default function UserManagementPage() {
                   <td className="px-6 py-4">
                     <button 
                       onClick={() => handleBlockToggle(user.id)}
-                      className={`px-4 py-1 rounded-lg text-sm font-medium ${
+                      className={`px-4 py-1 rounded-lg text-sm font-medium cursor-pointer ${
                         user.isBlocked 
                           ? 'bg-green-500 text-white hover:bg-green-600' 
                           : 'bg-red-500 text-white hover:bg-red-600'

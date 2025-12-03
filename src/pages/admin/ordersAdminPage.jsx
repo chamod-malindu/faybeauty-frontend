@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Paginator from "../../components/paginator";
 import { MdClose } from "react-icons/md";
 import isAdmin from "../../utils/isAdmin";
+import TitleHeaderDashboard from "../../components/TitleHeader";
 
 export default function OrdersAdminPage(){
   const navigate = useNavigate();
@@ -57,8 +58,11 @@ export default function OrdersAdminPage(){
 
   return(
     <div className="w-full h-full flex flex-col justify-between">
-      <table className="w-full border-[3px]">
-        <thead>
+
+      <TitleHeaderDashboard title="Orders Management" subtitle="Manage all the orders placed by customers." />
+
+      <table className="w-full border-[3px] border-gray-300">
+        <thead className="bg-gray-300">
           <tr>
             <th className="p-[10px]">Order ID</th>
 						<th className="p-[10px]">Email</th>

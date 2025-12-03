@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaImage } from 'react-icons/fa';
+import TitleHeaderDashboard from '../../components/TitleHeader';
 
 export default function SettingAdminPage() {
   const [formData, setFormData] = useState({
@@ -47,10 +48,8 @@ export default function SettingAdminPage() {
 
   return (
     <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Admin Settings</h1>
-        <p className="text-gray-600 mt-1">Manage your account information and preferences</p>
-      </div>
+      
+      <TitleHeaderDashboard title="Admin Settings" subtitle="Manage your account information and preferences" />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Image Section */}

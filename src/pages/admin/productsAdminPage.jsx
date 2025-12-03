@@ -6,6 +6,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { FaRegEdit } from "react-icons/fa";
 import Loader from "../../components/loader";
+import TitleHeaderDashboard from "../../components/TitleHeader";
 
 export default function ProductsAdminPage() {
   const[products, setProducts] = useState([]);
@@ -31,6 +32,9 @@ export default function ProductsAdminPage() {
   
   return (
     <div className="w-full h-full p-4">
+
+      <TitleHeaderDashboard title="Products Management" subtitle="Manage all the products available in the store." />
+
       {isLoading?<Loader /> 
       : (<table className="w-full border-collapse border border-gray-300 text-left">
         <thead className="bg-gray-200">
