@@ -2,8 +2,8 @@ export default function Paginator(props){
   const { currentPage , totalPages, setCurrentPage , limit , setLimit , setLoading} = props // deconstructing a json
 
   return(
-      <div className="w-full h-[50px] flex flex-row justify-center items-center gap-[20px]">
-          <select className="w-[100px] h-[40px] border border-gray-300 rounded-md p-[10px]" value={currentPage} onChange={(e)=>{
+      <div className="w-full h-[50px] flex flex-row justify-center items-center gap-[20px] mt-2">
+          <select className="w-[100px] h-[45px] border border-gray-300 rounded-md p-[10px] cursor-pointer px-2" value={currentPage} onChange={(e)=>{
               setLoading(true);
               setCurrentPage(parseInt(e.target.value));
 
@@ -16,7 +16,7 @@ export default function Paginator(props){
                   ))
               }
           </select>
-          <select className="w-[100px] h-[40px] border border-gray-300 rounded-md p-[10px]" value={limit} onChange={(e)=>{
+          <select className="w-[100px] h-[45px] border border-gray-300 rounded-md p-[10px] cursor-pointer" value={limit} onChange={(e)=>{
               setLoading(true);
               setLimit(parseInt(e.target.value));
           }}>
