@@ -1,49 +1,91 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaImage } from 'react-icons/fa';
 import TitleHeaderDashboard from '../../components/TitleHeader';
+import { getUserById, updateUserById } from '../../services/userService';
+import uploadFile from '../../utils/mediaUpload';
 
 export default function SettingAdminPage() {
-  const [formData, setFormData] = useState({
-    firstName: 'Amal',
-    lastName: 'Perera',
-    email: 'admin@example.com',
-    phone: '+1 234 567 8900',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-    image: 'https://via.placeholder.com/150'
-  });
-
   const [isEditing, setIsEditing] = useState(false);
+  const [adminData, setAdminData] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    image: ""
+  });
+  const [originalData, setOriginalData] = useState({});
+  const defaultImage = "https://xaezbcwztkcrkmtakkfg.supabase.co/storage/v1/object/public/skyrek-img/icon-5404125_1920.png";
 
-  const handleChange = (e) => {
-    if (e.target.type === 'file') {
-      const file = e.target.files[0];
-      if (file) {
-        const imageUrl = URL.createObjectURL(file);
-        setFormData({
-          ...formData,
-          image: imageUrl,
-          imageFile: file
-        });
-      }
-    } else {
+  useEffect(() => {
+    async function fetchAdminData() {
+      const userData = await getUserById();
+      setAdminData(userData);
+      setOriginalData(userData);
+      console.log(adminData);
+
       setFormData({
-        ...formData,
-        [e.target.name]: e.target.value
+        firstName: userData.firstName || "",
+        lastName: userData.lastName || "",
+        email: userData.email || "",
+        phone: userData.phone || "",
+        image: userData.image ? userData.image : "",
       });
     }
-  };
+    fetchAdminData();
+  }, []);
 
-  const handleSave = () => {
-    // Handle save logic here
+
+const handleChange = async (e) => {
+  const { name, type, files, value } = e.target;
+
+  // Handle IMAGE upload
+  if (type === "file") {
+    const file = files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true); 
+      const imageUrl = await uploadFile(file);
+      console.log("Uploaded image URL:", imageUrl);
+
+      setFormData(prev => ({
+        ...prev,
+        image: imageUrl || "" 
+      }));
+      
+    } catch (error) {
+      console.error("Failed to upload:", error);
+    } finally {
+      setIsUploading(false); 
+    }
+
+    return;
+  }
+
+  // Handle normal text inputs
+  setFormData(prev => ({
+    ...prev,
+    [name]: value || ""    
+  }));
+};
+
+  const handleSave = async () => {
+    console.log('Saving data:', formData);
+    const updatedData = await updateUserById(formData);
+
+    setOriginalData(updatedData);
+    setFormData(prev => ({...prev, ...updatedData})); // Merge updates safely
     setIsEditing(false);
+
     console.log('Saving:', formData);
   };
 
   const handleCancel = () => {
     setIsEditing(false);
     // Reset form data to original values
+    setFormData(originalData);
   };
 
   return (
@@ -56,12 +98,17 @@ export default function SettingAdminPage() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Profile Picture</h2>
           <div className="flex flex-col items-center">
-            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 mb-4">
+            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 mb-4 relative">
               <img 
-                src={formData.image} 
-                alt="Profile" 
-                className="w-full h-full object-cover"
+                src={formData.image || defaultImage} 
+                alt="Profile"
+                className={`w-full h-full object-cover ${isUploading ? 'opacity-50' : ''}`}
               />
+              {isUploading && (
+                  <div className="absolute inset-0 flex items-center justify-center text-lg font-bold text-black">
+                      Uploading...
+                  </div>
+              )}
             </div>
             {isEditing && (
               <div className="w-full">
@@ -71,13 +118,9 @@ export default function SettingAdminPage() {
                   name="image"
                   accept="image/*"
                   onChange={handleChange}
+                  disabled={isUploading} 
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
-                {formData.imageFile && (
-                  <p className="text-xs text-green-600 mt-1">
-                    Selected: {formData.imageFile.name}
-                  </p>
-                )}
               </div>
             )}
           </div>
@@ -104,9 +147,14 @@ export default function SettingAdminPage() {
                 </button>
                 <button
                   onClick={handleSave}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                  disabled={isUploading}
+                  className={`px-4 py-2 text-white rounded-lg ${
+                    isUploading 
+                      ? "bg-gray-400 cursor-not-allowed"  
+                      : "bg-green-500 hover:bg-green-600" 
+                  }`}
                 >
-                  Save Changes
+                  {isUploading ? "Uploading..." : "Save Changes"}
                 </button>
               </div>
             )}
@@ -155,8 +203,7 @@ export default function SettingAdminPage() {
                 type="email"
                 name="email"
                 value={formData.email}
-                onChange={handleChange}
-                disabled={!isEditing}
+                disabled
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-600"
               />
             </div>
@@ -179,8 +226,7 @@ export default function SettingAdminPage() {
           </div>
         </div>
       </div>
-
-      {/* Password Section */}
+      {/*
       <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
           <FaLock className="text-gray-400" />
@@ -203,7 +249,7 @@ export default function SettingAdminPage() {
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
+             <label className="text-sm font-medium text-gray-700 mb-2 block">
               New Password
             </label>
             <input
@@ -235,8 +281,8 @@ export default function SettingAdminPage() {
           className="mt-4 px-6 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover cursor-pointer"
         >
           Update Password
-        </button>
-      </div>
+        </button> 
+      </div>*/}
     </div>
   );
 }
