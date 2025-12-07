@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { handleRegister } from "../services/authService";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function RegisterPage() {
     );
   }
 
-  async function handleRegister(e){
+  const register = async (e) => {
 
     e.preventDefault(); // prevent form submission from reloading the page
 
@@ -44,7 +45,7 @@ export default function RegisterPage() {
     }
 
     try{
-      const response = await axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users", {
+      const response = await handleRegister({
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
@@ -53,8 +54,9 @@ export default function RegisterPage() {
         role: formData.role
       });
 
-      toast.success(response.data.message || "Registration successful! Please login.");
-      navigate("/login");
+      if(response) {
+        navigate("/login");
+      }
 
     }catch(error){
       console.log(error);
@@ -68,7 +70,7 @@ export default function RegisterPage() {
         {/* Title */}
         <h1 className="font-semibold text-5xl mt-[15px] mb-[20px] text-accent">Register</h1>
 
-        <form onSubmit={handleRegister} className="w-[450px] flex justify-center items-center flex-col  gap-4">
+        <form onSubmit={register} className="w-[450px] flex justify-center items-center flex-col  gap-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="font-semibold text-accent-hover text-[17px]">First Name</label>
