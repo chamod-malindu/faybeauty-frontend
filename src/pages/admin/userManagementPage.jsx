@@ -1,38 +1,63 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaSearch, FaCheckCircle } from 'react-icons/fa';
 import TitleHeaderDashboard from '../../components/TitleHeader';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function UserManagementPage() {
-  const initialUsers = [
-    { id: 1, name: "Sarah Johnson", email: "sarah@example.com", joinDate: "Oct 01, 2024", isEmailVerified: true, verified: true, orders: 12, isBlocked: false },
-    { id: 2, name: "Emma Wilson", email: "emma@example.com", joinDate: "Sep 15, 2024", isEmailVerified: true, verified: true, orders: 8, isBlocked: false },
-    { id: 3, name: "Lisa Anderson", email: "lisa@example.com", joinDate: "Sep 20, 2024", isEmailVerified: false, verified: false, orders: 5, isBlocked: false },
-    { id: 4, name: "Jennifer Lee", email: "jennifer@example.com", joinDate: "Aug 10, 2024", isEmailVerified: true, verified: true, orders: 3, isBlocked: true },
-    { id: 5, name: "Maria Garcia", email: "maria@example.com", joinDate: "Jul 25, 2024", isEmailVerified: true, verified: true, orders: 15, isBlocked: false },
-  ];
+  const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
 
-  const [users, setUsers] = useState(initialUsers);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
 
-  const handleBlockToggle = (userId) => {
-    setUsers(users.map(user => 
-      user.id === userId ? { ...user, isBlocked: !user.isBlocked } : user
-    ));
+  useEffect(() => {
+
+    axios.get(import.meta.env.VITE_BACKEND_URL+"/api/users",{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+
+    }).then((res) => {
+      console.log(res.data.users);
+      setUsers(res.data.users);
+
+    }).catch((err) => {
+      console.log("Error Fetching user", err);
+    });
+
+  },[])
+ 
+
+  const handleBlockToggle = (userId, isBlocked) => {
+    axios.put(import.meta.env.VITE_BACKEND_URL+"/api/users/block/"+userId, {isBlocked}, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    }).then((res) => {
+      setUsers(prevUsers => prevUsers.map(user => 
+        user._id === userId ? {...user, isBlocked: isBlocked} : user
+      ));
+      toast.success(res.data.message);
+
+    }).catch((err) => {
+      console.error(err);
+      toast.error("fail");
+    })
+      
   };
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          user.name.toLowerCase().includes(searchTerm.toLowerCase());
+                          user.firstName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterStatus === 'all' || 
-                          (filterStatus === 'active' && user.status === 'Active') ||
-                          (filterStatus === 'inactive' && user.status === 'Inactive') ||
+                          (filterStatus === 'verified' && user.isEmailVerified) ||
+                          (filterStatus === 'unverified' && !user.isEmailVerified) ||
                           (filterStatus === 'blocked' && user.isBlocked);
     return matchesSearch && matchesFilter;
   });
 
   const totalUsers = users.length;
-  const activeUsers = users.filter(u => u.status === 'Active').length;
+  const activeUsers = users.filter(u => u.isEmailVerified).length;
   const blockedUsers = users.filter(u => u.isBlocked).length;
 
   return (
@@ -40,7 +65,7 @@ export default function UserManagementPage() {
 
       <TitleHeaderDashboard title="User Management" subtitle="Manage and monitor all user accounts" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div className="bg-white flex items-center p-4 rounded-lg shadow-sm border border-gray-200">
           <div className="relative w-full">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent" size={20} />
@@ -77,14 +102,14 @@ export default function UserManagementPage() {
             All Users
           </button>
           <button 
-            onClick={() => setFilterStatus('active')}
-            className={`px-4 py-2 rounded-lg cursor-pointer ${filterStatus === 'active' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
-            Active
+            onClick={() => setFilterStatus('verified')}
+            className={`px-4 py-2 rounded-lg cursor-pointer ${filterStatus === 'verified' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
+            Verified
           </button>
           <button 
-            onClick={() => setFilterStatus('inactive')}
-            className={`px-4 py-2 rounded-lg cursor-pointer ${filterStatus === 'inactive' ? 'bg-gray-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
-            Inactive
+            onClick={() => setFilterStatus('unverified')}
+            className={`px-4 py-2 rounded-lg cursor-pointer ${filterStatus === 'unverified' ? 'bg-gray-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
+            Unverified
           </button>
           <button 
             onClick={() => setFilterStatus('blocked')}
@@ -95,7 +120,7 @@ export default function UserManagementPage() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="h-[500px] overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -109,25 +134,26 @@ export default function UserManagementPage() {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <div className="font-medium text-gray-900">{user.name}</div>
+                <tr key={user._id} className="hover:bg-gray-50">
+                  <td className="px-4 py-4">
+                    <div className="flex items-center gap-2"> 
+                        <img src={user.image} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
+                        <h2>{user.firstName}</h2>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{user.email}</td>
-                  <td className="px-6 py-4 text-gray-600">{user.joinDate}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4 text-gray-600">{user.email}</td>
+                  <td className="px-4 py-4 text-gray-600">{new Date(user.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-4">
                     <span className={`inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full gap-1 ${
                       user.isEmailVerified ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                     }`}>
                       {user.isEmailVerified ? <><FaCheckCircle /> Verified</> : 'Unverified'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{user.orders}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4 text-gray-600">{user.totalOrders}</td>
+                  <td className="px-4 py-4">
                     <button 
-                      onClick={() => handleBlockToggle(user.id)}
+                      onClick={() => handleBlockToggle(user._id, !user.isBlocked)}
                       className={`px-4 py-1 rounded-lg text-sm font-medium cursor-pointer ${
                         user.isBlocked 
                           ? 'bg-green-500 text-white hover:bg-green-600' 
