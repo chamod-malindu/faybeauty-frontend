@@ -13,9 +13,13 @@ export default function SettingAdminPage() {
     lastName: "",
     email: "",
     phone: "",
-    image: ""
+    image: "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
   });
   const [originalData, setOriginalData] = useState({});
+  const [isEditingPassword, setIsEditingPassword] = useState(false);
   const defaultImage = "https://xaezbcwztkcrkmtakkfg.supabase.co/storage/v1/object/public/skyrek-img/icon-5404125_1920.png";
 
   useEffect(() => {
@@ -87,6 +91,46 @@ const handleChange = async (e) => {
     // Reset form data to original values
     setFormData(originalData);
   };
+
+  const validatePasswordChange = () => {
+    if(!formData.currentPassword) {
+      alert("Please enter your current password.");
+      return false;
+    }
+
+    if(!formData.newPassword) {
+      alert("Please enter a new password.");
+      return false;
+    }
+
+    if(formData.newPassword !== formData.confirmPassword) {
+      alert("New password and confirm password do not match.");
+      return false;
+    }
+    return true;
+  }
+
+  const handleChangePassword = async () => {
+    if(!validatePasswordChange()) return;
+    setIsEditingPassword(true);
+    try {
+      const response = await updateUserById({
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword
+      });
+
+      setFormData(prev => ({
+        ...prev,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+      }));
+
+    } catch (error) {
+      console.error("Failed to change password:", error);
+    }
+    setIsEditingPassword(false);
+  }
 
   return (
     <div className="p-6">
@@ -226,7 +270,7 @@ const handleChange = async (e) => {
           </div>
         </div>
       </div>
-      {/*
+
       <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
           <FaLock className="text-gray-400" />
@@ -279,10 +323,11 @@ const handleChange = async (e) => {
 
         <button
           className="mt-4 px-6 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover cursor-pointer"
+          onClick={handleChangePassword}
         >
-          Update Password
+          {isEditingPassword ? "Updating..." : "Update Password"}
         </button> 
-      </div>*/}
+      </div>
     </div>
   );
 }
