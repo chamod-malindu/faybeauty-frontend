@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { HiShoppingBag } from "react-icons/hi2";
 import { GiLipstick } from "react-icons/gi";
 import { ImUsers } from "react-icons/im";
@@ -11,8 +11,46 @@ import UserManagementPage from "./admin/userManagementPage";
 import SettingAdminPage from "./admin/settingAdminPage";
 import { MdDashboard } from "react-icons/md";
 import DashboardAdminPage from "./admin/dashboardAdminPage";
+import { useEffect, useRef, useState } from "react";
+import { getUserById } from "../services/userService";
+import isAdmin from "../utils/isAdmin";
+import toast from "react-hot-toast";
+import logout from "../utils/logout";
 
 export default function adminPage() {
+  const navigate = useNavigate();
+  const [admin, setAdmin] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const hasWelcomed = useRef(false);
+
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      if (!isLoading) return;
+      try {
+        const response = await getUserById();
+        console.log(response);
+        setAdmin(response);
+
+        if (response.role !== "admin") {
+          toast.error("Unotherized acess. Admins only");
+          navigate("/login");
+          return;
+        }
+
+        if (!hasWelcomed.current) {
+          toast.success(`Welcome back, ${response.firstName }`);
+          hasWelcomed.current = true;
+        }
+        
+      }catch(err) {
+        toast.error("Faild to fetch admin data");
+        console.log("error", err);
+      }
+    
+      setIsLoading(false);
+    }
+    fetchAdminData();
+  }, []);
 
   return(
     <div className="w-screen h-full flex m-0 p-0">
@@ -27,10 +65,12 @@ export default function adminPage() {
       <div className="w-[calc(100%-300px)] h-full pl-10 pr-5 pt-3 pb-7">
         <div className="h-15 flex justify-end items-center mb-2">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-amber-300 rounded-full">
-            </div>
-            <h2 className="text-lg font-mono">Kamal Perera</h2>
-            <button className="bg-accent py-2 px-3 font-mono font-semibold rounded-2xl ml-3 hover:bg-accent-hover items-center justify-center shadow-lg border-2 text-lg border-accent cursor-pointer" >
+            <img src={admin.image} className="w-10 h-10 rounded-full object-cover" alt="Admin Profile Picture">
+            </img>
+            <h2 className="text-lg font-mono">{`${admin.firstName} ${admin.lastName}`}</h2>
+            <button className="bg-accent py-1 px-3 font-mono font-semibold rounded-2xl ml-3 hover:bg-accent-hover items-center justify-center shadow-lg border-2 text-lg border-accent cursor-pointer" 
+            onClick={logout}
+            >
             Logout
           </button>
           </div>
