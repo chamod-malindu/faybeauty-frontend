@@ -3,44 +3,34 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react"
 import toast from "react-hot-toast";
 import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
-import { mergeCartOnLogin } from "../utils/cart";
+import { handleGoodleLogin, handleLogin } from "../services/authService";
 
 export default function loginPage() {
   const[email, setEmail] = useState("");
   const[password, setPassword] = useState("");
   const navigate = useNavigate();
   const[isLoading, setIsLoading] = useState(false);
+  const[isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (response) => { 
       try {
-        setIsLoading(true);
-        const res = await axios.post(import.meta.env.VITE_BACKEND_URL + "/api/users/google-login",{ googleToken: response.access_token });
+        setIsGoogleLoading(true);
 
-        console.log(res);
-        const token = res.data.token;
-        localStorage.setItem("token", token);
+        const role = await handleGoodleLogin(response.access_token);
 
-
-        if (res.data.role === "user") {
-          await mergeCartOnLogin(token);
-        }
-
-        toast.success("Login successful!");
-
-        if (res.data.role === "admin") {
+        if (role === "admin") {
           navigate("/admin");
 
-        } else if (res.data.role === "user") {
+        } else if (role === "user") {
           navigate("/");
         }
 
       } catch (err) {
         console.error(err);
-        toast.error("Google login failed!");
 
       } finally {
-        setIsLoading(false);
+        setIsGoogleLoading(false);
       }
     },
     onError: () => {
@@ -48,41 +38,25 @@ export default function loginPage() {
     }
   });
 
-  async function login() {
-    console.log(email, password);
-    axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users/login", {
-      email: email,
-      password: password
-    }).then(
-      async (response) => {
-        console.log(response);
-        const token = response.data.token;
-        localStorage.setItem("token", response.data.token);
+  const login = async () => {
+    try {
+      setIsLoading(true);
+      const role = await handleLogin(email, password);
 
-        toast.success("Login successful!");
-        if(response.data.role == "admin") {
-          //window.location.href = "/admin";
+      if (role === "admin") {
           navigate("/admin");
-        }else if(response.data.role == "user") {
-          try {
-            await mergeCartOnLogin(token);
-            //window.location.href = "/";
-            navigate("/");
 
-          }catch(error) {
-            console.log(error);
-            toast.error("Login failed!");
-          }
-          
-        }
+      } else if (role === "user") {
+        navigate("/");
       }
-    ).catch
-      ((error) => {
-        console.log(error);
-        toast.error("Login failed!");
-        
-      })
-  }
+
+      setIsLoading(false);
+
+    }catch(err) {
+      console.log(err);
+      setIsLoading(false);
+    }
+  } 
 
   return (
     <div className="w-full h-screen bg-[url(./loginbg.jpg)] bg-cover bg-center flex">
@@ -126,16 +100,18 @@ export default function loginPage() {
 
         {/* Login Button */}
         <button
+          disabled={isLoading}
           className="w-[350px] h-[40px] bg-accent-hover rounded-xl text-lg text-white hover:bg-accent hover:border-accent hover:border cursor-pointer transition-all duration-300"
           onClick={login}
         >
-          Login Now
+          {isLoading ? "Loading..." : "Login Now"}
         </button>
         <button
+          disabled={isGoogleLoading}
           className="w-[350px] h-[40px] bg-accent-hover rounded-xl text-lg text-white hover:bg-accent hover:border-accent hover:border cursor-pointer transition-all duration-300"
           onClick={googleLogin}
         >
-          Google Login
+          {isGoogleLoading ? "Loading..." : "Google Login"}
         </button>
 
         {/* Sign Up Link */}

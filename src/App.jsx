@@ -23,7 +23,7 @@ function App() {
   return (
     <BrowserRouter>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-        <div className="w-full min-h-screen bg-primary text-secondary">
+        <div className="w-screen min-h-screen bg-primary text-secondary m-0 p-0">
             <Toaster position='top-right' reverseOrder={true} />
             <Routes path="/">
               <Route path="/login" element={<LoginPage />}/>

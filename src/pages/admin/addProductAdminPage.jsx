@@ -50,6 +50,7 @@ export default function AddProductAdminPage() {
       navigate("/login");
       return;
     }
+    //axios import.meta.env.VITE_BACKEND_URL
 
     axios.post(import.meta.env.VITE_BACKEND_URL+"/api/products", productData,
     {
