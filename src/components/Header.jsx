@@ -33,15 +33,16 @@ export default function Header() {
     <header className="w-full h-[100px] bg-accent flex justify-center items-center text-white text-2xl mb-[20px] relative">
       {/* Mobile Menu Overlay */}
       {isOpen && (
-        <div className="fixed z-[100] top-0 right-0 w-[100vw] h-[100vh] bg-[#00000050]">
-          <div className="h-full w-[350px] bg-white flex flex-col">
+        <div className="fixed z-[100] top-0 left-0 w-[100vh] h-[100vh] bg-[#00000050]">
+          <div className="h-full w-[300px] bg-white flex flex-col">
             {/* Mobile Menu Header */}
-            <div className="w-full bg-accent h-[100px] flex pl-[45px] flex-row items-center gap-[20px]">
+            <div className="w-full bg-accent h-[100px] flex items-center">
+              <img src="/logo.png" className="w-[240px] h-[100px] object-cover ml-2" />
               <IoClose 
                 className="text-white text-4xl hover:text-gray-300 cursor-pointer transition-colors" 
                 onClick={() => setIsOpen(false)}
               />
-              <h2 className="text-white text-xl font-semibold">Menu</h2>
+              {/* <h2 className="text-white text-xl font-semibold">Menu</h2> */}
             </div>
 
             {/* Mobile Menu Items */}
@@ -129,7 +130,10 @@ export default function Header() {
       />
 
       {/* Desktop Navigation */}
-      <div className="hidden md:flex justify-center items-center">
+      <Link to="/">
+        <img src="/logo.png" className="w-[240px] hidden md:flex absolute left-0 top-0 h-[100px] object-cover ml-2" />
+      </Link>
+      <div className="hidden ml-10 md:flex justify-center items-center">
         <Link to="/" className="text-white text-xl hover:text-secondary transition-colors flex flex-row items-center">
           <HiHome className="mr-2" />
           Home
@@ -151,9 +155,18 @@ export default function Header() {
           Contact Us
         </Link>
       </div>
+      <div className="absolute flex right-[20px] gap-10">
+        <div className="text-xl font-serif flex gap-3">
+          <Link to="/login" className="hover:text-black">
+            Login
+          </Link>
+          <Link to="/register" className="hover:text-black">
+            Sign up
+          </Link>
+        </div>
         <Link 
           to="/cart" 
-          className="absolute right-[20px] md:right-[50px] hover:text-secondary transition-colors flex flex-row items-center"
+          className="hidden md:right-[50px] md:flex hover:text-secondary transition-colors  flex-row items-center"
         >
           <TiShoppingCart className="text-3xl" />
           {cartCount > 0 && (
@@ -162,6 +175,8 @@ export default function Header() {
             </span>
           )}
         </Link>
+      </div>
+        
     </header>
   );
 }
