@@ -8,12 +8,33 @@ import { FaInfoCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { MdContactSupport, MdRateReview } from "react-icons/md";
 import { getCart } from "../utils/cart";
+import { getUserById } from "../services/userService";
+import { MdSendTimeExtension } from "react-icons/md";
+import AuthSection from "./AuthSection";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const[isOpen, setIsOpen] = useState(false);
-  const[cartCount, setCartCount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [user, setUser] = useState(null);
+  const defaultImage = "https://xaezbcwztkcrkmtakkfg.supabase.co/storage/v1/object/public/skyrek-img/icon-5404125_1920.png";
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchUser = async () => {
+      try {
+        const response = await getUserById();
+        setUser(response);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUser();
+  }, [token]);
 
   useEffect(() => {
     loadCartCount();
@@ -102,6 +123,20 @@ export default function Header() {
                 Contact Us
               </button>
 
+              {token ? (
+                  <button
+                    className="text-accent text-2xl flex flex-row items-center hover:text-accent-hover transition-colors"
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate("/orders");
+                    }}
+                  >
+                    <MdSendTimeExtension className="text-accent text-2xl mr-3 hover:text-accent-hover transition-colors" />
+                    Orders
+                  </button>
+                ) : ("")
+              }
+
               <button
                 className="text-accent text-2xl flex flex-row items-center hover:text-accent-hover transition-colors"
                 onClick={() => {
@@ -156,14 +191,8 @@ export default function Header() {
         </Link>
       </div>
       <div className="absolute flex right-[20px] gap-10">
-        <div className="text-xl font-serif flex gap-3">
-          <Link to="/login" className="hover:text-black">
-            Login
-          </Link>
-          <Link to="/register" className="hover:text-black">
-            Sign up
-          </Link>
-        </div>
+        <AuthSection token={token} user={user} defaultImage={defaultImage} />
+
         <Link 
           to="/cart" 
           className="hidden md:right-[50px] md:flex hover:text-secondary transition-colors  flex-row items-center"
