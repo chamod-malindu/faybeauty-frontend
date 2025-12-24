@@ -25,7 +25,7 @@ export default function CheckoutPage(){
         navigate("/login");
 
       }else{
-        axios.get(import.meta.env.VITE_BACKEND_URL+"/api/users",
+        axios.get(import.meta.env.VITE_BACKEND_URL+"/api/users/me",
         {
           headers: {
               Authorization: `Bearer ${token}`,
