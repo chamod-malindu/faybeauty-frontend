@@ -6,7 +6,8 @@ import { SiDropbox } from "react-icons/si";
 import { AreaChart,BarChart, Bar, Rectangle, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import TitleHeaderDashboard from "../../components/TitleHeader";
 import { useEffect, useState } from "react";
-import fetchDashboardOverview from "../../services/dashboardService";
+import { fetchDashboardOverview } from "../../services/dashboardService";
+
 
 
 
