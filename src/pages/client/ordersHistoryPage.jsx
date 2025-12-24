@@ -3,7 +3,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { cache, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../components/loader";
+import Loader from "../../components/Loader";
 import { TbTruckDelivery } from "react-icons/tb";
 import { MdOutlineWatchLater } from "react-icons/md";
 import ReviewPopup from "../../components/review/reviewPopup";
