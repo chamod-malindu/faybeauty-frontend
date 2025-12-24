@@ -10,10 +10,10 @@ export default function AuthSection({token, user, defaultImage}) {
               <MdSendTimeExtension className="mt-[3px]"/> 
               <h2 className="">Orders</h2>
             </Link>
-            <div className="flex gap-3 items-center justify-center">
+            <Link to="/client/dashboard" className="flex gap-3 items-center justify-center">
               <img src={user?.image || defaultImage} className="w-[40px] h-[40px] rounded-full object-cover shadow-xl border-2 border-accent-hover"></img>
               <h1 className="font-serif mt-[4px]">{user?.firstName}</h1>
-            </div>
+            </Link>
           </div>
     )
   }else {
