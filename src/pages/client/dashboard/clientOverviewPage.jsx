@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { useClientDashboard } from "../../../hooks/useDashboardQueries";
 import { useUser } from "../../../hooks/useUserQueries";
 import Loader from "../../../components/Loader";
+import dayjs from "../../../utils/dayjs";
+
 
 
 export default function ClientDashboardOverviewPage() {
@@ -120,7 +122,7 @@ export default function ClientDashboardOverviewPage() {
               >
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-800">{order.orderId}</h3>
-                  <p className="text-sm text-gray-500">{order.date}</p>
+                  <p className="text-sm text-gray-500">{dayjs(order.date).fromNow()}</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
@@ -167,7 +169,7 @@ export default function ClientDashboardOverviewPage() {
                       </p>
                     ))} 
                   </div>
-                  <span className="text-xs text-gray-500">{review.date}</span>
+                  <span className="text-xs text-gray-500">{dayjs(review.createdAt).fromNow()}</span>
                 </div>
                 <p className="text-sm text-gray-700">
                   {review.comment}
