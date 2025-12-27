@@ -179,7 +179,7 @@ export default function Header() {
         </Link>
         <Link to="/reviews" className="ml-6 text-white text-xl hover:text-secondary transition-colors flex flex-row items-center justify-center">
           <MdRateReview className="mr-2" />
-          Reviews
+          Site Reviews
         </Link>
         <Link to="/aboutUS" className="ml-6 text-white text-xl hover:text-secondary transition-colors flex flex-row items-center">
           <FaInfoCircle className="mr-2" />
