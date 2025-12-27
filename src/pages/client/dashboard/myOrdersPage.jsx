@@ -99,14 +99,14 @@ export default function MyOrdersPage() {
   }
 
   return (
-    <div className="h-screen relative">
+    <div className="min-h-screen relative flex flex-col">
       <TitleHeaderDashboard 
         title="My Orders" 
         subtitle="Track and manage all your orders"
       />
 
       {/* Orders List */}
-      <div className="px-10 mt-6 space-y-5">
+      <div className="px-10 mt-6 space-y-5 flex-1 mb-5">
         {orders.length > 0 ? (
           orders.map((order) => (
             <div 
@@ -280,7 +280,7 @@ export default function MyOrdersPage() {
 
       {/* Pagination */}
       {orders.length > 0 && (
-        <div className="flex items-center justify-between px-10 mt-8 absolute bottom-5 w-full">
+        <div className="flex items-center justify-between px-10 mt-auto w-full">
           <div className="text-sm text-gray-600">
             Showing {(page - 1) * limit + 1} to{" "}
             {Math.min(page * limit, orderCount)} of {orderCount} orders
