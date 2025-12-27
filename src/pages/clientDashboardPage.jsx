@@ -7,6 +7,8 @@ import ClientProfilePage from "./client/dashboard/clientProfilePage";
 import MyOrdersPage from "./client/dashboard/myOrdersPage";
 import { useUser } from "../hooks/useUserQueries";
 import logout from "../utils/logout";
+import { FaStar } from "react-icons/fa";
+import ClientMyReviews from "./client/dashboard/myReviewPage";
 
 export default function ClientDashboard(){
   const { data: userData, isLoading, isError } = useUser();
@@ -20,6 +22,7 @@ export default function ClientDashboard(){
         </div>
         <Link to="/client/dashboard" className="flex flex-row h-[60px] w-full p-[20px] items-center text-xl gap-[25px] hover:bg-accent hover:text-white"> <MdDashboard /> Overview </Link>
         <Link to="/client/dashboard/orders" className="flex flex-row h-[60px] w-full p-[20px] items-center text-xl gap-[25px] hover:bg-accent hover:text-white"> <HiShoppingBag /> My Orders</Link>
+        <Link to="/client/dashboard/reviews" className="flex flex-row h-[60px] w-full p-[20px] items-center text-xl gap-[25px] hover:bg-accent hover:text-white"> <FaStar /> My Reviews </Link>
         <Link to="/client/dashboard/profile" className="flex flex-row h-[60px] w-full p-[20px] items-center text-xl gap-[25px] hover:bg-accent hover:text-white"> <ImUser /> Profile</Link>
       </div>
       <div className="w-full min-h-screen p-8">
@@ -33,6 +36,7 @@ export default function ClientDashboard(){
         <Routes path="/" >
         <Route path="/" element={<ClientDashboardOverviewPage />} />
         <Route path="/orders" element={<MyOrdersPage />} />
+        <Route path="/reviews" element={<ClientMyReviews />} />
         <Route path="/profile" element={<ClientProfilePage />} />
       </Routes>
       </div>
