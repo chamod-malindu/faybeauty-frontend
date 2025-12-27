@@ -16,7 +16,7 @@ export default function ReviewPopup({ index, item, onClose, setRating, rating, s
           {/* Header */}
           <div className="mb-5">
             <h2 className="text-xl font-bold text-gray-800">Rate & Review</h2>
-            <h3 className="text-sm text-gray-500">Share your experience with this order</h3>
+            <h3 className="text-sm text-gray-500">Share your experience with this product</h3>
           </div>
 
           <div className="my-3">
