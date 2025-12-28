@@ -133,7 +133,7 @@ const handleChange = async (e) => {
   }
 
   return (
-    <div className="p-6">
+    <div>
       
       <TitleHeaderDashboard title="Admin Settings" subtitle="Manage your account information and preferences" />
 
