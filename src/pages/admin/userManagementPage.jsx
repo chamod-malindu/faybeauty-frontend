@@ -61,7 +61,7 @@ export default function UserManagementPage() {
   const blockedUsers = users.filter(u => u.isBlocked).length;
 
   return (
-    <div className="p-6">
+    <div>
 
       <TitleHeaderDashboard title="User Management" subtitle="Manage and monitor all user accounts" />
 
