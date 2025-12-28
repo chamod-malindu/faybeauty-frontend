@@ -6,12 +6,14 @@ import ClientDashboardOverviewPage from "./client/dashboard/clientOverviewPage";
 import ClientProfilePage from "./client/dashboard/clientProfilePage";
 import MyOrdersPage from "./client/dashboard/myOrdersPage";
 import { useUser } from "../hooks/useUserQueries";
-import logout from "../utils/logout";
 import { FaStar } from "react-icons/fa";
 import ClientMyReviews from "./client/dashboard/myReviewPage";
+import useLogout from "../utils/logout";
+
 
 export default function ClientDashboard(){
   const { data: userData, isLoading, isError } = useUser();
+  const logout = useLogout();
 
   return (
     <div className="w-screen h-full flex m-0 p-0">
@@ -30,7 +32,7 @@ export default function ClientDashboard(){
         <Link to="/" className="hover:text-shadow-accent-hover">Home</Link>
         <button 
           className=" hover:text-shadow-accent-hover cursor-pointer"
-          onClick={() => logout()}
+          onClick={logout}
         >Logout</button>
       </div>
         <Routes path="/" >
