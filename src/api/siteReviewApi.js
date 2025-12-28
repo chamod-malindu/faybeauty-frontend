@@ -21,8 +21,8 @@ export function changeSiteReview(reviewId, rating, comment) {
 }
 
 // Update site review status (admin)
-export function changeSiteReviewStatus(reviewId, status) {
-  return api.put(`/site-reviews/status/${reviewId}`, { status });
+export function changeSiteReviewStatus(reviewId, isApproved) {
+  return api.put(`/site-reviews/status/${reviewId}`, { isApproved });
 }
 
 // Delete a site review
