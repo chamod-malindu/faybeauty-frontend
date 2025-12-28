@@ -1,4 +1,4 @@
-import { deleteReviewApi, getReviewsApi, getUserReviewsApi, reviewApi, updateReviewApi } from "../api/reviewApi"
+import { deleteReviewApi, getAllReviewsApi, getProductReviewsApi, getUserReviewsApi, reviewApi, updateReviewApi } from "../api/reviewApi"
 
 
 export async function submitReview(productId, rating, comment) {
@@ -15,7 +15,7 @@ export async function submitReview(productId, rating, comment) {
 
 export async function fetchProductReviews(productId) {
   try {
-    const response = await getReviewsApi(productId);
+    const response = await getProductReviewsApi(productId);
     return response.data.reviews;
   } catch (error) {
     console.error("Error fetching product reviews:", error);
@@ -33,6 +33,16 @@ export async function fetchUserReviews() {
   }
 }
 
+export async function fetchAllReviews() {
+  try {
+    const response = await getAllReviewsApi();
+    return response.data.reviews;
+  } catch (error) {
+    console.error("Error fetching all reviews:", error);
+    throw error;
+  }
+}
+
 export async function updateReview(reviewId, rating, comment) {
   try {
     const response = await updateReviewApi(reviewId, rating, comment);
@@ -46,7 +56,7 @@ export async function updateReview(reviewId, rating, comment) {
 export async function deleteReview(reviewId) {
   try {
     const response = await deleteReviewApi(reviewId);
-    return response.data.message;
+    return response.data;
   } catch (error) {
     console.error("Error deleting review:", error);
     throw error;
