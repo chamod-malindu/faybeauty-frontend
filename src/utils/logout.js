@@ -1,18 +1,26 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-export default function logout() {
-  // Remove token and role from localStorage
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
+export default function useLogout() {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
-  // Optionally remove other user info
-  localStorage.removeItem("user");
+  const logout = () => {
+    // Remove auth data
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
 
-  // Show success toast
-  toast.success("Logged out successfully");
+    // Clear all cached queries
+    queryClient.clear();
 
-  // Redirect to login page
-  setTimeout(() => {
-    window.location.href = "/login";
-  }, 1500);
+    // Show toast
+    toast.success("Logged out successfully");
+
+    // Redirect
+    navigate("/login");
+  };
+
+  return logout;
 }
