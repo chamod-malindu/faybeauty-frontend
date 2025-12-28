@@ -15,13 +15,17 @@ import { useEffect, useRef, useState } from "react";
 import { getUserById } from "../services/userService";
 import isAdmin from "../utils/isAdmin";
 import toast from "react-hot-toast";
-import logout from "../utils/logout";
+import useLogout from "../utils/logout";
+import { FaStar } from "react-icons/fa6";
+import ReviewsManagementPage from "./admin/reviewsManagementPage";
 
 export default function adminPage() {
   const navigate = useNavigate();
   const [admin, setAdmin] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const hasWelcomed = useRef(false);
+
+  const logout = useLogout();
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -59,6 +63,7 @@ export default function adminPage() {
           <Link className="flex flex-row h-[60px] w-full p-[20px] items-center text-xl gap-[25px] hover:bg-accent hover:text-white" to="/admin"> <MdDashboard /> Dashboard </Link>
           <Link className="flex flex-row h-[60px] w-full p-[20px] items-center text-xl gap-[25px] hover:bg-accent hover:text-white" to="/admin/products"> <GiLipstick /> Products </Link>
           <Link className="flex flex-row h-[60px] w-full p-[20px] items-center text-xl gap-[25px] hover:bg-accent hover:text-white" to="/admin/orders"> <HiShoppingBag /> Orders </Link>
+          <Link className="flex flex-row h-[60px] w-full p-[20px] items-center text-xl gap-[25px] hover:bg-accent hover:text-white" to="/admin/reviews"> <FaStar /> Reviews </Link>
           <Link className="flex flex-row h-[60px] w-full p-[20px] items-center text-xl gap-[25px] hover:bg-accent hover:text-white" to="/admin/users"> <ImUsers /> Users </Link>
           <Link className="flex flex-row h-[60px] w-full p-[20px] items-center text-xl gap-[25px] hover:bg-accent hover:text-white" to="/admin/settings"> <IoSettings /> Settings </Link>
       </div>
@@ -68,7 +73,7 @@ export default function adminPage() {
             <img src={admin.image} className="w-10 h-10 rounded-full object-cover" alt="Admin Profile Picture">
             </img>
             <h2 className="text-lg font-mono">{`${admin.firstName} ${admin.lastName}`}</h2>
-            <button className="bg-accent py-1 px-3 font-mono font-semibold rounded-2xl ml-3 hover:bg-accent-hover items-center justify-center shadow-lg border-2 text-lg border-accent cursor-pointer" 
+            <button className="bg-accent py-1 px-3 font-serif rounded-2xl ml-3 hover:bg-accent-hover items-center justify-center shadow-lg border-2 text-lg border-accent cursor-pointer" 
             onClick={logout}
             >
             Logout
@@ -81,6 +86,7 @@ export default function adminPage() {
           <Route path="/newProduct" element={<AddProductAdminPage />}/>
           <Route path="/orders" element={<OrdersAdminPage />}/>
           <Route path="/updateProduct" element={<UpdateProductPage />}/>
+          <Route path="/reviews" element={<ReviewsManagementPage />}/>
           <Route path="/users" element={<UserManagementPage />}/>
           <Route path="/settings" element={<SettingAdminPage />}/>
         </Routes>
