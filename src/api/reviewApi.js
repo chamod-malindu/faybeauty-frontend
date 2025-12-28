@@ -6,13 +6,17 @@ export function reviewApi(productId, rating, comment) {
 }
 
 // Get reviews for a specific product
-export function getReviewsApi(productId) {
+export function getProductReviewsApi(productId) {
   return api.get(`/reviews/product/${productId}`);
 }
 
 // Get reviews by the logged-in user
 export function getUserReviewsApi() {
   return api.get("/reviews/user");
+}
+
+export function getAllReviewsApi() {
+  return api.get("/reviews");
 }
 
 // Update a review
