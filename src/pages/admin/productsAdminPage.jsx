@@ -35,12 +35,12 @@ export default function ProductsAdminPage() {
   const navigate = useNavigate();
   
   return (
-    <div className="w-full h-full p-4">
+    <div className="w-full h-full">
 
       <TitleHeaderDashboard title="Products Management" subtitle="Manage all the products available in the store." />
 
       {isLoading?<Loader /> 
-      : (<table className="w-full border-collapse border border-gray-300 text-left">
+      : (<table className="w-full bg-white text-left">
         <thead className="bg-gray-200">
           <tr>
             <th className="p-2 border border-gray-300">Image</th>
