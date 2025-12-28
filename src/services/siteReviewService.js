@@ -22,8 +22,8 @@ export async function updateSiteReview(reviewId, rating, comment) {
     return response.data.siteReview;
 }
 
-export async function updateSiteReviewStatus(reviewId, status) {
-    const response = await changeSiteReviewStatus(reviewId, status);
+export async function updateSiteReviewStatus(reviewId, isApproved) {
+    const response = await changeSiteReviewStatus(reviewId, isApproved);
     return response.data.siteReview;
 }
 
