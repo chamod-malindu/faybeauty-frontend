@@ -169,9 +169,9 @@ export default function AddProductAdminPage() {
             onChange={(e) => setCategory(e.target.value)}
             className="w-full border-[1px] h-[40px] rounded-md"
           >
-            <option value="cream">Cream</option>
-            <option value="face wash">Face Wash</option>
-            <option value="soap">Soap</option>
+            <option value="cream">Skincare</option>
+            <option value="face wash">Makeup</option>
+            <option value="soap">Haircare</option>
             <option value="fragrance">Fragrance</option>
           </select>
         </div>
