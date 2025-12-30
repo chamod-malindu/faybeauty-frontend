@@ -1,43 +1,16 @@
 import { useState } from "react";
 import { FaStar, FaQuoteLeft } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { useCreateSiteReview } from "../../hooks/useSiteReviewQueries";
-
-const TOP_REVIEWS = [
-  {
-    id: 1,
-    name: "Elena Richardson",
-    rating: 5,
-    date: "Dec 20, 2025",
-    comment:
-      "The shopping experience is as luxury as the products themselves. Seamless and beautiful interface.",
-    verified: true,
-  },
-  {
-    id: 2,
-    name: "Marcus Vane",
-    rating: 5,
-    date: "Dec 18, 2025",
-    comment:
-      "I love how easy it is to navigate the site and explore collections. Everything feels premium.",
-    verified: true,
-  },
-  {
-    id: 3,
-    name: "Sophia Chen",
-    rating: 5,
-    date: "Dec 15, 2025",
-    comment:
-      "A beauty website that truly feels elegant. The design and experience are top-tier.",
-    verified: true,
-  },
-];
+import { useCreateSiteReview, useSiteReviewQueries } from "../../hooks/useSiteReviewQueries";
+import dayJs from "../../utils/dayjs";
 
 export default function SiteReviews() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
-  const { mutate: createSiteReview, isLoading } = useCreateSiteReview();
+  const { mutate: createSiteReview } = useCreateSiteReview();
+  const { data: siteReviews, isLoading } = useSiteReviewQueries();
+  let reviewsCount = 0;
 
   const handleSubmit = (rating, comment) => {
 
@@ -50,6 +23,14 @@ export default function SiteReviews() {
     setRating(0);
     setComment("");
   }
+
+  if (siteReviews?.length <= 3) {
+    reviewsCount = siteReviews?.length; 
+  }else {
+    reviewsCount = 3;
+  }
+
+  console.log("Site Reviews:", siteReviews);
 
   return (
       <div className="flex-1 pt-5 pb-10 bg-primary">
@@ -118,9 +99,9 @@ export default function SiteReviews() {
                 Top Rated Experiences
               </h2>
 
-              {TOP_REVIEWS.map((review) => (
+              {siteReviews?.map((review) => (
                 <div
-                  key={review.id}
+                  key={review._id}
                   className="bg-white p-8 rounded-2xl shadow-sm  relative"
                 >
                   <FaQuoteLeft className="absolute top-4 right-4 text-accent/10 text-5xl" />
@@ -145,16 +126,16 @@ export default function SiteReviews() {
                   <div className="flex justify-between items-center border-t pt-4">
                     <div>
                       <p className="font-serif text-gray-800">
-                        {review.name}
+                        {review.userId.firstName} {review.userId.lastName}
                       </p>
-                      {review.verified && (
+                      {review.isVerified && (
                         <span className="text-[10px] uppercase tracking-widest text-gray-400">
                           Verified Client
                         </span>
                       )}
                     </div>
                     <span className="text-xs text-gray-400">
-                      {review.date}
+                      {dayJs(review.createdAt).fromNow()}
                     </span>
                   </div>
                 </div>
@@ -162,7 +143,7 @@ export default function SiteReviews() {
 
               <div className="bg-white p-6 rounded-xl text-center shadow-sm">
                 <p className="text-sm text-gray-500">
-                  Showing 3 of 152 verified site reviews
+                  Showing {reviewsCount}  of {siteReviews?.length} verified site reviews
                 </p>
               </div>
             </div>
