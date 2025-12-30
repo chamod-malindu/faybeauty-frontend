@@ -168,7 +168,7 @@ export default function Header() {
       <Link to="/">
         <img src="/logo.png" className="w-[240px] hidden md:flex absolute left-0 top-0 h-[100px] object-cover ml-2" />
       </Link>
-      <div className="hidden ml-10 md:flex justify-center items-center">
+      <div className="hidden md:flex justify-center items-center">
         <Link to="/" className="text-white text-xl hover:text-secondary transition-colors flex flex-row items-center">
           <HiHome className="mr-2" />
           Home
