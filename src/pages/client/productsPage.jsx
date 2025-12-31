@@ -29,7 +29,7 @@ export default function ProductsPage() {
     [isLoading]
 )
   return (
-    <div className="w-full min-h-screen bg-primary">
+    <div className="w-full min-h-screen bg-primary pb-10">
       <div className="w-full mb-[30px] mt-[30px] flex justify-center items-center">
         <input type="text" placeholder="Search Products......." value={query} onChange={
           (e) => {

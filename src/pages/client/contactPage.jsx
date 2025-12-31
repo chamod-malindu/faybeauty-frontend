@@ -10,7 +10,7 @@ import {
 
 export default function ContactUs() {
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center pb-20">
       <div className="max-w-4xl w-full bg-white rounded-2xl shadow-lg overflow-hidden mt-10">
         
         {/* Header */}

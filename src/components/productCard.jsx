@@ -37,13 +37,13 @@ export default function ProductCard(props) {
           {product.labelledPrice > product.price ? (
             <p className="text-base font-semibold">
               <span className="line-through mr-2 text-gray-400 text-sm">
-                {product.labelledPrice.toLocaleString("en-US", {
+                Rs {product.labelledPrice.toLocaleString("en-US", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
               </span>
               <span className="text-accent">
-                {product.price.toLocaleString("en-US", {
+                Rs {product.price.toLocaleString("en-US", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}

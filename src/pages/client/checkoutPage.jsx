@@ -12,7 +12,7 @@ export default function CheckoutPage(){
   const location = useLocation();
   const navigate = useNavigate();
   const [cart, setCart] = useState(location.state?.items || []);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -33,9 +33,8 @@ export default function CheckoutPage(){
 
         }).then(
           (res) => {
-            setUser(res.data);
-            setName(res.data.firstName + " " + res.data.lastName);
-            console.log(res.data);
+            setUser(res.data.user);
+            setName(res.data.user.firstName + " " + res.data.user.lastName);
           }
         ).catch(
           (err) => {
