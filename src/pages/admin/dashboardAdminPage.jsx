@@ -32,10 +32,10 @@ export default function DashboardAdminPage() {
       <TitleHeaderDashboard title="Dashboard Overview" subtitle="Welcome back to Faye Beauty Admin." />
 
       <div className="grid grid-cols-4 gap-2 w-full mb-6">
-        <Card title="Total Revenue" amount={`${overview ? `$${overview.totalRevanue}` : "$0.00"}`} percentage="12.5%" icon={<MdOutlineAttachMoney size={20} />} />
-        <Card title="Total Orders" amount={`${overview ? overview.totalOrders : "0"}`} percentage="12.5%" icon={<TiShoppingCart size={20} />} />
-        <Card title="Active Users" amount={`${overview ? overview.totalUsers : "0"}`} percentage="12.5%" icon={<FaUserFriends size={20} />} />
-        <Card title="Total Products" amount={`${overview ? overview.totalProducts : "0"}`} percentage="12.5%" icon={<SiDropbox size={20} />} />
+        <Card title="Total Revenue" amount={`${overview ? `$${overview.totalRevanue}` : "$0.00"}`} icon={<MdOutlineAttachMoney size={20} />} />
+        <Card title="Total Orders" amount={`${overview ? overview.totalOrders : "0"}`} icon={<TiShoppingCart size={20} />} />
+        <Card title="Active Users" amount={`${overview ? overview.totalUsers : "0"}`} icon={<FaUserFriends size={20} />} />
+        <Card title="Total Products" amount={`${overview ? overview.totalProducts : "0"}`} icon={<SiDropbox size={20} />} />
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className=" bg-white rounded-2xl py-5 pr-5">
