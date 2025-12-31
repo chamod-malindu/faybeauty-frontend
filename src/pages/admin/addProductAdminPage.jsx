@@ -6,6 +6,8 @@ import uploadFile from "../../utils/mediaUpload";
 import isAdmin from "../../utils/isAdmin";
 
 export default function AddProductAdminPage() {
+  const navigate = useNavigate();
+
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
   const [alternativeNames, setAlternativeNames] = useState("");
@@ -16,177 +18,196 @@ export default function AddProductAdminPage() {
   const [stock, setStock] = useState("");
   const [isAvailable, setIsAvailable] = useState(true);
   const [category, setCategory] = useState("cream");
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-  async function handleSubmit(){
+  async function handleSubmit() {
+    setIsLoading(true);
 
-    const promisesArray = [];
+    try {
+      const token = localStorage.getItem("token");
 
-    for(let i=0; i<images.length; i++){
-      const promise = uploadFile(images[i]);
-      promisesArray[i] = promise;
-    }
-
-    const responses = await Promise.all(promisesArray);
-    console.log(responses);
-    
-    const alternativeArray = alternativeNames.split(",");
-    const productData = {
-      productId: productId,
-      name: productName,
-      altNames: alternativeArray,
-      labelledPrice: labelledPrice,
-      price: price,
-      images: responses,
-      description: description,
-      stock: stock,
-      isAvailable: isAvailable,
-      category: category,
-    };
-    
-    const token = localStorage.getItem("token");
-
-    if(!token) {
-      navigate("/login");
-      return;
-    }
-    //axios import.meta.env.VITE_BACKEND_URL
-
-    axios.post(import.meta.env.VITE_BACKEND_URL+"/api/products", productData,
-    {
-      headers: {
-        Authorization: "Bearer "+token
+      if (!token) {
+        navigate("/login");
+        return;
       }
-    }
-    ).then((res) => {
-      if(!isAdmin(res)){
+
+      let imageUrls = [];
+
+      if (images.length > 0) {
+        const uploadPromises = Array.from(images).map(image => uploadFile(image));
+        imageUrls = await Promise.all(uploadPromises);
+      }
+
+      const alternativeArray = alternativeNames.split(",").map(name => name.trim()).filter(Boolean);
+
+      const productData = {
+        productId,
+        name: productName,
+        altNames: alternativeArray,
+        labelledPrice: Number(labelledPrice),
+        price: Number(price),
+        images: imageUrls,
+        description,
+        stock: Number(stock),
+        isAvailable,
+        category,
+      };
+
+      const res = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/api/products",
+        productData,
+        {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        }
+      );
+
+      if (!isAdmin(res)) {
         toast.error("Unauthorized Access");
         navigate("/login");
         return;
       }
+
       console.log("Product Was Successfully Created");
       console.log(res.data);
       toast.success("Product created successfully!");
       navigate("/admin/products");
-    }
-    ).catch((err) => {
+    } catch (err) {
       console.error("Error creating product:", err);
       toast.error("Failed to create product. Please try again.");
-    });
-    console.log("Product Data:", productData);
-  };
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
-    <div className="w-full h-full flex justify-center items-center">
-      <div className="w-[600px] border-[3px] rounded-[15px] p-[40px] flex flex-wrap justify-between">
-        <div className="w-[200px] flex flex-col gap-[5px]">
-          <label className="text-sm font-semibold">Product ID</label>
-          <input
-            type="text"
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-            className="w-full border-[1px] h-[40px] rounded-md"
-          />
+    <div className="w-full min-h-screen flex justify-center items-center p-4">
+      <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-lg shadow-sm p-8">
+        <h1 className="text-2xl font-bold mb-6 text-gray-900">Add Product</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">Product ID</label>
+            <input
+              type="text"
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+              className="w-full border border-gray-300 h-10 rounded-md px-3 focus:ring-2 focus:ring-accent focus:border-transparent"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">Product Name</label>
+            <input
+              type="text"
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+              className="w-full border border-gray-300 h-10 rounded-md px-3 focus:ring-2 focus:ring-accent focus:border-transparent"
+            />
+          </div>
+
+          <div className="md:col-span-2 flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">Alternative Names</label>
+            <input
+              type="text"
+              value={alternativeNames}
+              onChange={(e) => setAlternativeNames(e.target.value)}
+              placeholder="Separate with commas"
+              className="w-full border border-gray-300 h-10 rounded-md px-3 focus:ring-2 focus:ring-accent focus:border-transparent"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">Labelled Price</label>
+            <input
+              type="number"
+              value={labelledPrice}
+              onChange={(e) => setLabelledPrice(e.target.value)}
+              className="w-full border border-gray-300 h-10 rounded-md px-3 focus:ring-2 focus:ring-accent focus:border-transparent"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">Price</label>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full border border-gray-300 h-10 rounded-md px-3 focus:ring-2 focus:ring-accent focus:border-transparent"
+            />
+          </div>
+
+          <div className="md:col-span-2 flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">Images</label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => setImages(e.target.files)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-accent hover:file:bg-blue-100"
+            />
+          </div>
+
+          <div className="md:col-span-2 flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">Description</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full border border-gray-300 h-24 rounded-md px-3 py-2 focus:ring-2 focus:ring-accent focus:border-transparent resize-none"
+            ></textarea>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">Stock</label>
+            <input
+              type="number"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              className="w-full border border-gray-300 h-10 rounded-md px-3 focus:ring-2 focus:ring-accent focus:border-transparent"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">Availability</label>
+            <select
+              value={isAvailable}
+              onChange={(e) => setIsAvailable(e.target.value === "true")}
+              className="w-full border border-gray-300 h-10 rounded-md px-3 focus:ring-2 focus:ring-accent focus:border-transparent"
+            >
+              <option value={true}>Available</option>
+              <option value={false}>Not Available</option>
+            </select>
+          </div>
+
+          <div className="md:col-span-2 flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">Category</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full border border-gray-300 h-10 rounded-md px-3 focus:ring-2 focus:ring-accent focus:border-transparent"
+            >
+              <option value="cream">Skincare</option>
+              <option value="face wash">Makeup</option>
+              <option value="soap">Haircare</option>
+              <option value="fragrance">Fragrance</option>
+            </select>
+          </div>
         </div>
-        <div className="w-[300px] flex flex-col gap-[5px]">
-          <label className="text-sm font-semibold">Product Name</label>
-          <input
-            type="text"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-            className="w-full border-[1px] h-[40px] rounded-md"
-          />
-        </div>
-        <div className="w-[500px] flex flex-col gap-[5px]">
-          <label className="text-sm font-semibold">Alternative Names</label>
-          <input
-            type="text"
-            value={alternativeNames}
-            onChange={(e) => setAlternativeNames(e.target.value)}
-            className="w-full border-[1px] h-[40px] rounded-md"
-          />
-        </div>
-        <div className="w-[200px] flex flex-col gap-[5px]">
-          <label className="text-sm font-semibold">Labelled Price</label>
-          <input
-            type="number"
-            value={labelledPrice}
-            onChange={(e) => setLabelledPrice(e.target.value)}
-            className="w-full border-[1px] h-[40px] rounded-md"
-          />
-        </div>
-        <div className="w-[200px] flex flex-col gap-[5px]">
-          <label className="text-sm font-semibold">Price</label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="w-full border-[1px] h-[40px] rounded-md"
-          />
-        </div>
-        <div className="w-[500px] flex flex-col gap-[5px]">
-          <label className="text-sm font-semibold">Images</label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={(e) => setImages(e.target.files)}
-            className="w-full border-[1px] h-[40px] rounded-md"
-          />
-        </div>
-        <div className="w-[500px] flex flex-col gap-[5px]">
-          <label className="text-sm font-semibold">Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full border-[1px] h-[100px] rounded-md"
-          ></textarea>
-        </div>
-        <div className="w-[200px] flex flex-col gap-[5px]">
-          <label className="text-sm font-semibold">Stock</label>
-          <input
-            type="number"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            className="w-full border-[1px] h-[40px] rounded-md"
-          />
-        </div>
-        <div className="w-[200px] flex flex-col gap-[5px]">
-          <label className="text-sm font-semibold">Is Available</label>
-          <select
-            value={isAvailable}
-            onChange={(e) => setIsAvailable(e.target.value === "true")}
-            className="w-full border-[1px] h-[40px] rounded-md"
-          >
-            <option value={true}>Available</option>
-            <option value={false}>Not Available</option>
-          </select>
-        </div>
-        <div className="w-[200px] flex flex-col gap-[5px]">
-          <label className="text-sm font-semibold">Category</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full border-[1px] h-[40px] rounded-md"
-          >
-            <option value="cream">Skincare</option>
-            <option value="face wash">Makeup</option>
-            <option value="soap">Haircare</option>
-            <option value="fragrance">Fragrance</option>
-          </select>
-        </div>
-        <div className="w-full flex justify-center flex-row py-[20px]">
+
+        <div className="flex gap-4 mt-8 justify-end">
           <Link
-            to={"/admin/products"}
-            className="w-[200px] h-[50px] bg-white text-black border-[2px] rounded-md flex justify-center items-center"
+            to="/admin/products"
+            className="px-6 py-2.5 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors font-medium"
           >
             Cancel
           </Link>
           <button
             onClick={handleSubmit}
-            className="w-[200px] h-[50px] bg-black text-white border-[2px] rounded-md flex justify-center items-center ml-[20px]"
+            disabled={isLoading}
+            className="px-6 py-2.5 bg-accent text-white rounded-md hover:bg-accent-hover transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
           >
-            Add Product
+            {isLoading ? "Adding..." : "Add Product"}
           </button>
         </div>
       </div>
