@@ -3,11 +3,12 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { cache, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../components/Loader";
+import Loader from "../../components/loader";
 import { TbTruckDelivery } from "react-icons/tb";
 import { MdOutlineWatchLater } from "react-icons/md";
 import ReviewPopup from "../../components/review/reviewPopup";
 import toast from "react-hot-toast";
+import CancelOrderModal from "../../components/CancelOrderModal";
 
 export default function OrdersHistoryPage() {
   const navigate = useNavigate();
@@ -24,6 +25,9 @@ export default function OrdersHistoryPage() {
   const [comment, setComment] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [reviewSent, setReviewSent] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelingOrderId, setCancelingOrderId] = useState(null);
+
 
   const token = localStorage.getItem("token");
 
@@ -90,6 +94,37 @@ export default function OrdersHistoryPage() {
       console.error("Failed to submit review:", error);
     }
   }
+
+  const handleCancelOrder = async (orderId, reason) => {
+    try {
+      if (!reason || reason.trim() === "") {
+        toast.error("Please provide a cancel reason");
+        return;
+      }
+
+      console.log("Cancelling order:", orderId, "Reason:", reason);
+      await axios.post(import.meta.env.VITE_BACKEND_URL + `/api/orders/cancel/${orderId}`,
+        { reason },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success("Order cancelled successfully");
+
+      setShowCancelModal(false);
+      setCancelingOrderId(null);setIsLoading(true);
+
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error.response?.data?.message || "Failed to cancel order"
+      );
+    }
+  };          
+
 
   return(
     <div className="w-full min-h-screen flex flex-col items-center bg-primary pb-17 pt-5 px-4 relative">
@@ -166,7 +201,7 @@ export default function OrdersHistoryPage() {
                               </div>
                               <div className="flex flex-col items-end">
                                 <p className="font-semibold text-secondary">Rs.{item.quantity * item.price}</p>
-                                <button className={`${order.status === "Pending" ? "hidden" : "font-bold text-accent-hover hover:text-accent cursor-pointer" }`}
+                                <button className={`${order.status === "Pending" || order.status === "Cancelled" ? "hidden" : "font-bold text-accent-hover hover:text-accent cursor-pointer" }`}
                                 onClick={() => {
                                   setPopupVisible(true);
                                   setSelectedItem(item);
@@ -207,15 +242,32 @@ export default function OrdersHistoryPage() {
                         <div className="flex gap-4 pt-4">
                           <button 
                           disabled={order.status !== "Pending"}
-                          className={`flex-1 bg-red-500 border-2 border-gray-200 text-white font-medium py-3 rounded-lg   ${order.status !== "Pending" ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 hover:border-red-500 hover:text-red-500 hover:cursor-pointer"}  transition-colors`}>
+                          className={`flex-1 bg-red-500 border-2 border-gray-200 text-white font-medium py-3 rounded-lg   ${order.status !== "Pending" ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 hover:border-red-500 hover:text-red-500 hover:cursor-pointer"}  transition-colors`}
+                          onClick={() => {
+                            setCancelingOrderId(order.orderId);
+                            setShowCancelModal(true);
+                          }}
+                          >
                           Cancel Order
                           </button>
                            
                           
-                          <button className="flex-1 bg-white border-2 border-gray-200 text-secondary font-medium py-3 rounded-lg hover:bg-gray-300 hover:cursor-pointer hover:text-white transition-colors">
+                          <button className="flex-1 bg-white border-2 border-gray-200 text-secondary font-medium py-3 rounded-lg hover:bg-gray-300 hover:cursor-pointer hover:text-white transition-colors"
+                            onClick={() => {navigate("/contactUs")}}
+                          >
                             Contact Support
                           </button>
                         </div>
+
+                        {/* Cancel Order Modal */}
+                        {showCancelModal && (
+                          <CancelOrderModal
+                            isOpen={showCancelModal}
+                            onClose={() => setShowCancelModal(false)}
+                            orderId={cancelingOrderId}
+                            onSubmit={handleCancelOrder}
+                          />
+                        )}
                   </div>
                 )}
               </div>
