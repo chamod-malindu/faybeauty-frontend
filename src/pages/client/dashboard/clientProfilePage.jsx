@@ -3,7 +3,7 @@ import { FaUser, FaEnvelope, FaPhone, FaLock, FaCamera } from "react-icons/fa";
 import TitleHeaderDashboard from "../../../components/TitleHeader";
 import { useUpdatePassword, useUpdateUser, useUser } from "../../../hooks/useUserQueries";
 import uploadFile from "../../../utils/mediaUpload";
-import Loader from "../../../components/Loader";
+import Loader from "../../../components/loader";
 import toast from "react-hot-toast";
 
 export default function ClientProfilePage() {
