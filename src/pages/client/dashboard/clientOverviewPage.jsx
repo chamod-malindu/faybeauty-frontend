@@ -4,7 +4,7 @@ import Card from "../../../components/Card";
 import { Link } from "react-router-dom";
 import { useClientDashboard } from "../../../hooks/useDashboardQueries";
 import { useUser } from "../../../hooks/useUserQueries";
-import Loader from "../../../components/Loader";
+import Loader from "../../../components/loader";
 import dayjs from "../../../utils/dayjs";
 
 
