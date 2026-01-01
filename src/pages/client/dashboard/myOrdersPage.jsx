@@ -4,7 +4,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { TbTruckDelivery } from "react-icons/tb";
 import { MdOutlineWatchLater } from "react-icons/md";
 import TitleHeaderDashboard from "../../../components/TitleHeader";
-import Loader from "../../../components/Loader";
+import Loader from "../../../components/loader";
 import ReviewPopup from "../../../components/review/reviewPopup";
 import { useOrders } from "../../../hooks/useOrderQueries";
 import { useSubmitReview } from "../../../hooks/useReviewQueries";
