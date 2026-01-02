@@ -66,12 +66,12 @@ export default function RegisterPage() {
 
   return (
     <div className="w-full h-screen bg-[url(/registerbg.png)] bg-cover bg-center flex justify-center items-center">
-      <div className="w-[500px] h-[500px] flex flex-col justify-center items-center backdrop-blur-sm shadow-2xl rounded-[30px]">
+      <div className="w-screen m-2 lg:w-[500px] lg:h-[500px] flex flex-col justify-center items-center backdrop-blur-sm shadow-2xl rounded-[30px]">
         {/* Title */}
-        <h1 className="font-semibold text-5xl mt-[15px] mb-[20px] text-accent">Register</h1>
+        <h1 className="font-semibold font-serif text-3xl lg:text-5xl mt-[15px] mb-[20px] text-accent">Register</h1>
 
-        <form onSubmit={register} className="w-[450px] flex justify-center items-center flex-col  gap-4">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={register} className="lg:w-[450px] flex justify-center items-center flex-col  gap-4">
+          <div className="grid lg:grid-cols-2 gap-4 w-full">
             <div>
               <label className="font-semibold text-accent-hover text-[17px]">First Name</label>
               <input 
@@ -98,7 +98,7 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid lg:grid-cols-2 gap-4 w-full">
             <div className="flex flex-col">
               <label className="font-semibold text-accent-hover text-[17px]">Email</label>
               <input 
@@ -125,7 +125,7 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid lg:grid-cols-2 gap-4 w-full">
             <div className="flex flex-col">
               <label className="font-semibold text-accent-hover text-[17px]">Password</label>
               <input 

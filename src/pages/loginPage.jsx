@@ -59,11 +59,11 @@ export default function loginPage() {
   } 
 
   return (
-    <div className="w-full h-screen bg-[url(/loginbg.jpg)] bg-cover bg-center flex">
-      <div className="w-[500px] h-[500px] backdrop-blur-sm shadow-2xl rounded-[30px] mt-[8%] ml-[9%] relative flex flex-col items-center justify-center gap-[20px]">
+    <div className="w-full h-screen bg-[url(/loginbg.jpg)] bg-cover bg-center flex items-center">
+      <div className="w-[500px] h-[500px] backdrop-blur-sm shadow-2xl rounded-[30px] lg:mt-[5%] lg:ml-[9%] relative flex flex-col items-center justify-center gap-[20px] mx-2">
         
         {/* Heading */}
-        <h1 className="absolute top-[20px] text-2xl font-bold text-accent-hover text-center my-5">
+        <h1 className="absolute top-[20px] font-serif text-2xl font-bold text-accent-hover text-center my-5">
           Login
         </h1>
 
