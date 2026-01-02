@@ -55,6 +55,23 @@ It enables users to explore beauty products, view detailed product information, 
 
 ---
 
+## 🔐 Authentication
+
+- Email & password authentication
+- Google OAuth login
+- JWT-based authorization
+- Email verification using OTP
+
+## 📈 Architecture Highlights
+
+- RESTful API design
+- Modular MVC backend structure
+- Efficient data fetching using React Query
+- Secure authentication & authorization flow
+- Scalable MongoDB schema design
+
+---
+
 ## 📂 Project Structure
 ```
 src/
@@ -94,32 +111,16 @@ src/
 
 ---
 
-## 🔐 Authentication
-
-- Email & password authentication
-- Google OAuth login
-- JWT-based authorization
-- Email verification using OTP
-
-## 📈 Architecture Highlights
-
-- RESTful API design
-- Modular MVC backend structure
-- Efficient data fetching using React Query
-- Secure authentication & authorization flow
-- Scalable MongoDB schema design
-
----
 
 ## 🚀 Getting Started
 
-- Follow these steps to run the Faye Beauty frontend locally.
+### Follow these steps to run the Faye Beauty frontend locally.
 
 ### 📥 Clone the Repository
 
 ```
-git clone https://github.com/your-username/faye-beauty-frontend.git
-cd faye-beauty-frontend
+git clone https://github.com/chamod-malindu/faybeauty-frontend.git
+cd fayebeauty-frontend
 ```
 
 ### 📦 Install Dependencies
