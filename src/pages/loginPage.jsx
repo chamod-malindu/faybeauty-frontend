@@ -59,7 +59,7 @@ export default function loginPage() {
   } 
 
   return (
-    <div className="w-full h-screen bg-[url(./loginbg.jpg)] bg-cover bg-center flex">
+    <div className="w-full h-screen bg-[url(/loginbg.jpg)] bg-cover bg-center flex">
       <div className="w-[500px] h-[500px] backdrop-blur-sm shadow-2xl rounded-[30px] mt-[8%] ml-[9%] relative flex flex-col items-center justify-center gap-[20px]">
         
         {/* Heading */}

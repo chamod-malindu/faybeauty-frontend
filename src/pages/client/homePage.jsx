@@ -29,10 +29,10 @@ export default function HomePage() {
     {
       name: "Spa Ceylon",
       icon: "🌿",
-      description: "Luxury Ayurvedic wellness products inspired by Sri Lanka’s ancient healing traditions."
+      description: "Luxury Ayurvedic wellness products inspired by Sri Lanka's ancient healing traditions."
     },
     {
-      name: "Nature’s Secrets",
+      name: "Nature's Secrets",
       icon: "🍃",
       description: "Herbal beauty solutions crafted with natural ingredients and modern science."
     },
@@ -52,41 +52,41 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-primary pb-20 ">
       {/* HERO SECTION */}
-      <div className="flex justify-center mb-8">
-        <section className="h-[670px] w-[calc(100vw-50px)] flex flex-col items-start relative ">
+      <div className="flex justify-center mb-8 px-4 sm:px-6 lg:px-8">
+        <section className="h-auto min-h-[500px] sm:min-h-[600px] lg:h-[670px] w-full flex flex-col items-start relative">
 
           <video src="\Video\background.mp4" 
-            className="w-full h-full object-cover rounded-3xl shadow-lg " 
+            className="w-full h-full object-cover rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-lg absolute top-0 left-0" 
             autoPlay
             loop
             muted
             playsInline 
           />
 
-          <div className="mt-5 w-full my-0 mx-auto px-6 grid md:grid-cols-2 gap-5 items-center absolute top-[-25px] left-0 h-full">
+          <div className="relative z-10 w-full h-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-0 grid lg:grid-cols-2 gap-6 lg:gap-8 items-center">
 
           
-            <div className="ml-15">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 font-serif text-white/90">
+            <div className="lg:ml-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6 font-serif text-white/90">
                 Glow in <br /> Your Own Way
               </h1>
-              <p className="text-white/80 max-w-md mb-8 text-lg">
+              <p className="text-white/80 max-w-md mb-6 sm:mb-8 text-base sm:text-lg">
                 Discover our curated collection of premium cosmetics and skincare
                 products designed to enhance your natural beauty.
               </p>
-              <div className="flex gap-4">
-                <Link to="/products" className="px-6 py-3 rounded-md bg-accent hover:bg-accent-hover text-white transition">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Link to="/products" className="px-6 py-3 rounded-md bg-accent hover:bg-accent-hover text-white transition text-center">
                   Shop Now
                 </Link>
-                <Link to="/aboutUs" className="px-6 py-3 rounded-md border border-white/50 hover:bg-white/10 text-white/80 transition">
+                <Link to="/aboutUs" className="px-6 py-3 rounded-md border border-white/50 hover:bg-white/10 text-white/80 transition text-center">
                   Learn More
                 </Link>
               </div>
             </div>
 
           
-            <div>
-              <div className="rounded-2xl overflow-hidden shadow-lg w-[700px] h-[500px]">
+            <div className="hidden lg:flex justify-center items-center">
+              <div className="rounded-2xl overflow-hidden shadow-lg w-full max-w-[700px] h-[400px] xl:h-[500px]">
                 <img
                   src="\frontimag.png"
                   alt="Beauty products"
@@ -99,9 +99,9 @@ export default function HomePage() {
       </div>
 
       {/* COLLECTION */}
-      <section className="mx-auto px-6 max-w-7xl mt-20">
-        <h2 className="text-2xl font-semibold mb-8 font-serif">Our Collections</h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <section className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl mt-12 sm:mt-16 lg:mt-20">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 font-serif">Our Collections</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {collections.map((item) => (
             <div
               key={item.name}
@@ -115,20 +115,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-accent-hover mt-20 text-white py-20 text-center">
-        <h2 className="text-3xl font-bold font-serif">Glow Starts With You</h2>
-        <p className="mb-5 text-white/80 text-lg">
+      <section className="bg-accent-hover mt-12 sm:mt-16 lg:mt-20 text-white py-12 sm:py-16 lg:py-20 text-center px-4">
+        <h2 className="text-2xl sm:text-3xl font-bold font-serif">Glow Starts With You</h2>
+        <p className="mb-5 text-white/80 text-base sm:text-lg max-w-2xl mx-auto">
           Beauty essentials trusted by thousands worldwide.
         </p>
-        <Link to="/products" className="px-8 py-3 rounded-md bg-white text-accent hover:bg-gray-100 transition shadow-lg">
+        <Link to="/products" className="inline-block px-6 sm:px-8 py-3 rounded-md bg-white text-accent hover:bg-gray-100 transition shadow-lg">
           Explore Products
         </Link>
       </section>
 
       {/* TOP BRANDS */}
-      <section className="mx-auto px-6 max-w-7xl mt-20">
-        <h2 className="text-2xl font-semibold mb-8 font-serif">Top Brands</h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <section className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl mt-12 sm:mt-16 lg:mt-20">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 font-serif">Top Brands</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {topBrands.map((item) => (
             <div
               key={item.name}

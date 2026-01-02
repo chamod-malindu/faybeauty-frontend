@@ -65,7 +65,7 @@ export default function RegisterPage() {
   }  
 
   return (
-    <div className="w-full h-screen bg-[url(./registerbg.png)] bg-cover bg-center flex justify-center items-center">
+    <div className="w-full h-screen bg-[url(/registerbg.png)] bg-cover bg-center flex justify-center items-center">
       <div className="w-[500px] h-[500px] flex flex-col justify-center items-center backdrop-blur-sm shadow-2xl rounded-[30px]">
         {/* Title */}
         <h1 className="font-semibold text-5xl mt-[15px] mb-[20px] text-accent">Register</h1>

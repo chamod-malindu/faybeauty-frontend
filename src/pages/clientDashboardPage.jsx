@@ -17,6 +17,7 @@ export default function ClientDashboard(){
 
   return (
     <div className="w-screen h-full flex m-0 p-0">
+      {/* Sidebar */}
       <div className="w-[280px] min-h-screen flex flex-col items-center shadow-xl">
         <div className="w-full flex flex-col mt-5 pb-2 justify-start border-b border-accent pl-5">
           <h1 className="text-2xl font-bold font-serif"> Welcome ! </h1>

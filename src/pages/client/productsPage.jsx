@@ -30,7 +30,7 @@ export default function ProductsPage() {
 )
   return (
     <div className="w-full min-h-screen bg-primary pb-10">
-      <div className="w-full mb-[30px] mt-[30px] flex justify-center items-center">
+      <div className="w-full mb-[30px] mt-[30px] flex justify-center items-center px-3">
         <input type="text" placeholder="Search Products......." value={query} onChange={
           (e) => {
             setQuery(e.target.value);

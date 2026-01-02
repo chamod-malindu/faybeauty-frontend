@@ -10,8 +10,8 @@ import {
 
 export default function ContactUs() {
   return (
-    <div className="flex justify-center pb-20">
-      <div className="max-w-4xl w-full bg-white rounded-2xl shadow-lg overflow-hidden mt-10">
+    <div className="flex justify-center pb-20 bg-primary">
+      <div className="max-w-4xl w-full bg-white rounded-2xl shadow-lg overflow-hidden mt-10 mx-2">
         
         {/* Header */}
         <div className="bg-accent-hover text-white text-center py-10">
@@ -22,7 +22,7 @@ export default function ContactUs() {
         </div>
 
         {/* Content */}
-        <div className="p-8 grid md:grid-cols-2 gap-30">
+        <div className="p-8 grid md:grid-cols-2 gap-10 lg:gap-30">
           
           {/* Contact Details */}
           <div className="space-y-6 ml-15">
