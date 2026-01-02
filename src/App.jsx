@@ -11,7 +11,7 @@ import ResetPasswordPage from './pages/resetPasswordPage'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ClientDashboard from './pages/clientDashboardPage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,7 +46,7 @@ function App() {
           </div> 
           </GoogleOAuthProvider> 
       </BrowserRouter>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   )
 }
