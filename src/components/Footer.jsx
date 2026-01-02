@@ -17,7 +17,7 @@ export default function Footer() {
         </div>
 
         {/* Shop */}
-        <div className="ml-5">
+        <div className="lg:ml-5">
           <h4 className="font-semibold mb-4 text-white font-serif">Shop</h4>
           <ul className="space-y-2 text-sm text-white/80">
             <li className="hover:text-[#0f2d1d] cursor-pointer">Skincare</li>
