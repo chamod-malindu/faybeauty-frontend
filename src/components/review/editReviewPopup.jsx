@@ -46,7 +46,7 @@ export default function EditReviewPopup({
           <h1 className="text-sm font-semibold mb-2">Item</h1>
           <div className="flex gap-2">
             <img
-              src={item.image}
+              src={item.images[0]}
               alt={item.name}
               className="w-16 h-16 object-cover rounded-md"
             />

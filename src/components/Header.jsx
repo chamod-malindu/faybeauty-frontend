@@ -148,7 +148,7 @@ export default function Header() {
                 Cart
 
                 {cartCount > 0 && (
-                  <span className="absolute top-[-8px] left-[18px] bg-red-500 text-white text-xs rounded-full w-[20px] h-[20px] flex items-center justify-center">
+                  <span className="absolute hidden  top-[-8px] left-[18px] bg-red-500 text-white text-xs rounded-full w-[20px] h-[20px] lg:flex items-center justify-center">
                     {cartCount}
                   </span>
                   )}
